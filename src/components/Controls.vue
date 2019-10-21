@@ -1,7 +1,10 @@
 <template>
-  <div class="p-2 d-flex">
-    <button :disabled="!canPlay" @click="play">Play</button>
-    <button :disabled="!canSkip" @click="skip">Next</button>
+  <div>
+    <div class="btn-group btn-group-sm" role="group">
+      <button class="btn btn-secondary" :disabled="!canPlay" @click="play">Play</button>
+      <button class="btn btn-secondary" :disabled="!canSkip" @click="skip">Next</button>
+    </div>
+    <div v-if="hasCurrentItem" class="border-top mt-1 pt-2"><span class="text-muted">Playing:</span> {{ control.currentItem.title }}</div>
   </div>
 </template>
 
@@ -17,8 +20,11 @@ export default {
       'control',
       'queue',
     ]),
+    hasCurrentItem() {
+      return !_.isNull(this.control.currentItem)
+    },
     canPlay() {
-      return this.queue.length > 0 && _.isNull(this.control.currentItem)
+      return this.queue.length > 0 && !this.hasCurrentItem
     },
     canSkip() {
       return this.queue.length > 1

@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="d-flex align-items-stretch">
-    <Library class="flex-grow-1 p-3 border-right" />
-    <Queue class="py-3 w-25" />
+    <Library class="flex-grow-1 p-2 border-right" />
+    <Queue class="p-2 w-25" />
   </div>
 </template>
 

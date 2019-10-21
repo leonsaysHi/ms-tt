@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="video" :class="{'-collapsed': currentItem.id !== item.id}">
+    <div class="video" :class="{'-collapsed': !isHeadOfQueue}">
       <youtube
         ref="youtube"
          class="w-100"
@@ -8,7 +8,7 @@
         :player-vars="playerVars"
       ></youtube>
     </div>
-    <div class="d-flex justify-content-between">
+    <div v-if="!isHeadOfQueue" class="d-flex justify-content-between">
       <div><span v-if="youtubeState === 1" class="text-muted">Playing:</span> {{ item.title }} </div>
       <div><a @click="remove">&times;</a></div>
     </div>
@@ -27,7 +27,7 @@ export default {
       playerVars: {
         width: "100%",
         resize: true,
-        controls: 0,
+        // controls: 0,
         modestbranding: 1,
       },
     }
@@ -35,14 +35,14 @@ export default {
   async mounted () {
     this.player.addEventListener('onStateChange', this.youtubeControl);
     // const totalTime = await this.player.getDuration();
-    this.checkVideoPlayingState()
+    this.updateVideoPlayingState()
   },
   computed: {
     ...mapState([
       'control'
     ]),
-    currentItem() {
-      return this.control.currentItem
+    isHeadOfQueue() {
+      return this.control.currentItem.id === this.item.id
     },
     player () {
       return this.$refs.youtube.player
@@ -52,8 +52,10 @@ export default {
     },
   },
   watch: {
-    currentItem: function(newVal) {
-      this.checkVideoPlayingState(newVal)
+    isHeadOfQueue: function(newVal) {
+      if (newVal) {
+        this.updateVideoPlayingState()
+      }
     }
   },
   methods: {
@@ -78,16 +80,14 @@ export default {
        */
       this.youtubeState = youtubeState.data
       if (this.youtubeState === 0) {
-        this.eneded()
+        this.ended()
       }
       if (this.youtubeState === 1) {
         // this.updateVideoCurrentTime()
       }
     },
-    checkVideoPlayingState( newVal = this.currentItem) {
-      if (
-        this.youtubeState !== 1 && newVal && newVal.id === this.item.id
-      ) {
+    updateVideoPlayingState() {
+      if (this.isHeadOfQueue && this.youtubeState !== 1) {
         this.player.playVideo()
       }
     },

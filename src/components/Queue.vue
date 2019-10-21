@@ -4,7 +4,7 @@
     <div
       v-for="(item, idx) in players"
       :key="item.id"
-      class="my-3 pb-2 border-bottom"
+      class="py-2 border-bottom"
     >
       <PlayerItem
         :item="item"
