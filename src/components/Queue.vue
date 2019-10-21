@@ -1,13 +1,14 @@
 <template>
   <div class="p-2">
+    <Controls />
     <div
-      v-for="item in players"
+      v-for="(item, idx) in players"
       :key="item.id"
       class="my-3 pb-2 border-bottom"
     >
       <PlayerItem
         :item="item"
-        @ended="ended(item)"
+        :current="idx === 0"
         :ref="item.id"
       />
     </div>
@@ -15,11 +16,13 @@
 </template>
 
 <script>
+import Controls from "./Controls";
 import PlayerItem from "./PlayerItem";
-import { mapState, mapMutations } from 'vuex';
+import { mapState } from 'vuex';
 export default {
-  name: "Players",
+  name: "Queue",
   components: {
+    Controls,
     PlayerItem,
   },
   data() {
@@ -31,18 +34,12 @@ export default {
       'queue'
     ]),
     players() {
-      return this.queue.slice(0,2).map(item => ({
+      return this.queue.map(item => ({
         ...item
       }))
     }
   },
   methods: {
-    ...mapMutations([
-      'removeFromQueue',
-    ]),
-    ended(item) {
-      this.removeFromQueue(item)
-    },
   },
 };
 </script>

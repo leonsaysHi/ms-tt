@@ -1,23 +1,23 @@
 <template>
   <div id="app" class="d-flex align-items-stretch">
-    <Playlist class="w-50 p-3 border-right" />
-    <Players class="py-3" />
+    <Library class="flex-grow-1 p-3 border-right" />
+    <Queue class="py-3 w-25" />
   </div>
 </template>
 
 <script>
-import Players from "./components/Players";
-import Playlist from "./components/Playlist";
+import Queue from "./components/Queue";
+import Library from "./components/Library";
 
 export default {
   name: "App",
   components: {
-    Playlist,
-    Players,
+    Library,
+    Queue,
   },
 };
 </script>
 
 <style lang="scss">
-@import "./bootstrap.scss";
+  @import "./bootstrap.scss";
 </style>

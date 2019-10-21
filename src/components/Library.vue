@@ -11,15 +11,19 @@
 <script>
 import { mapState, mapMutations } from 'vuex';
 export default {
-  name: "Playlist",
+  name: "Library",
   data() {
     return  {
     }
   },
   computed: {
     ...mapState({
-      items: state => state.playlist,
+      queue: state => state.queue,
+      library: state => state.library,
     }),
+    items() {
+      return _.difference(this.library, this.queue)
+    },
   },
   methods: {
     ...mapMutations([

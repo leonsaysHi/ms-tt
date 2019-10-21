@@ -35,7 +35,10 @@
       "plugin:vue/essential",
       "eslint:recommended"
     ],
-    "rules": {},
+    "globals": { "_": true },
+    "rules": {
+      "no-irregular-whitespace": "off"
+    },
     "parserOptions": {
       "parser": "babel-eslint"
     }
