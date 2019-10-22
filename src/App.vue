@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="d-flex align-items-stretch">
-    <Library class="flex-grow-1 p-2 border-right" />
-    <Queue class="p-2 w-25" />
+    <div class="flex-grow-1 p-2 border-right"><Library /></div>
+    <div class="p-2 w-25"><Queue /></div>
   </div>
 </template>
 
@@ -20,4 +20,11 @@ export default {
 
 <style lang="scss">
   @import "./bootstrap.scss";
+  #app {
+    min-height: 100vh;
+    > * {
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+  }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="d-flex justify-content-between">
-      <div><span v-if="youtubeState === 1" class="text-muted">Playing:</span> {{ item.title }} </div>
+      <div>{{ item.title }} </div>
       <div><a @click="remove">&times;</a></div>
     </div>
   </div>
@@ -20,7 +20,7 @@ export default {
       'control'
     ]),
     isHeadOfQueue() {
-      return this.control.currentItem.id === this.item.id
+      return this.control.currentItem.video_id === this.item.video_id
     },
   },
   methods: {

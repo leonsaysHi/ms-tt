@@ -1,5 +1,6 @@
 <template>
   <div>
+    <AddVideo class="mb-3" />
     <ul class="list-group">
       <li class="list-group-item" v-for="(item, idx) in items" :key="idx"><a @click="pushToQueue(item)">
         <strong>{{ item.title }}</strong>
@@ -9,9 +10,13 @@
 </template>
 
 <script>
+import AddVideo from './AddVideo';
 import { mapState, mapMutations } from 'vuex';
 export default {
   name: "Library",
+  components: {
+    AddVideo,
+  },
   data() {
     return  {
     }

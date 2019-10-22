@@ -4,7 +4,7 @@
       <button class="btn btn-secondary" :disabled="!canPlay" @click="play">Play</button>
       <button class="btn btn-secondary" :disabled="!canSkip" @click="skip">Next</button>
     </div>
-    <div v-if="hasCurrentItem" class="border-top mt-1 pt-2"><span class="text-muted">Playing:</span> {{ control.currentItem.title }}</div>
+    <div v-if="hasCurrentItem" class="border-top my-1 pt-2"><span class="text-muted">Playing:</span> {{ control.currentItem.title }}</div>
   </div>
 </template>
 

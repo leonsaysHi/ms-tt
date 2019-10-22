@@ -2,9 +2,10 @@ export default {
   strict: true,
   state: {
     library: [
-      { id: "1", videoId: "S6Ib57K0Q1c", title: "Si si" },
-      { id: "2", videoId: "EbdRyar3g1Q", title: "Si Te Vas" },
-      { id: "3", videoId: "eOAmA5iy4ds", title: "Subiendo" }
+      { video_id: "S6Ib57K0Q1c", title: "Si si" },
+      { video_id: "EbdRyar3g1Q", title: "Si Te Vas" },
+      { video_id: "eOAmA5iy4ds", title: "Subiendo" },
+      { video_id: "kIjhRmj_-00", title: "Tu tu" },
     ],
     queue: [],
     control: {
@@ -12,6 +13,9 @@ export default {
     }
   },
   mutations: {
+    pushToLibrary(state, { video_id, title }) {
+      this.state.library.push({ video_id, title })
+    },
     pushToQueue(state, item) {
       state.queue.push(item);
       if (state.queue.length === 1) {
@@ -19,9 +23,9 @@ export default {
       }
     },
     removeFromQueue(state, item) {
-      state.queue = state.queue.filter(i => i.id !== item.id);
+      state.queue = state.queue.filter(i => i.video_id !== item.video_id);
       const { currentItem } = state.control
-      if (item.id === currentItem.id) {
+      if (item.video_id === currentItem.video_id) {
         state.control.currentItem = state.queue[0];
       }
     },
