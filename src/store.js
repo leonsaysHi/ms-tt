@@ -1,18 +1,29 @@
+import firebase from 'firebase'
+
 export default {
   strict: true,
   state: {
-    library: [
-      { video_id: "S6Ib57K0Q1c", title: "Si si" },
-      { video_id: "EbdRyar3g1Q", title: "Si Te Vas" },
-      { video_id: "eOAmA5iy4ds", title: "Subiendo" },
-      { video_id: "kIjhRmj_-00", title: "Tu tu" },
-    ],
+    library: [],
     queue: [],
     control: {
       currentItem: null,
-    }
+    },
+    user: {
+      uid: "yG2OtYEEvRP8emQeyhmnmKWeCjj1"
+    },
   },
   mutations: {
+    // User
+    setUser (state, payload) {
+      state.user = payload
+    },
+    removeUser (state) {
+      state.user = null
+    },
+    // Lib
+    setLibrary(state, list) {
+      this.state.library = list
+    },
     pushToLibrary(state, { video_id, title }) {
       this.state.library.push({ video_id, title })
     },
@@ -32,5 +43,66 @@ export default {
     playQueue(state) {
       state.control.currentItem = state.queue[0];
     },
+  },
+  actions: {
+    // User
+    signUpAction ({ commit }, payload) {
+      commit('setStatus', 'loading')
+      firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
+        .then((response) => {
+          alert('success')
+          // response will have user
+          // user will have uid will be updated to the state
+          commit('setUser', response.user.uid)
+          commit('setStatus', 'success')
+          commit('setError', null)
+        })
+        .catch((error) => {
+          commit('setStatus', 'failure')
+          commit('setError', error.message)
+        })
+    },
+
+    signInAction ({ commit }, payload) {
+      firebase.auth().signInWithEmailAndPassword(payload.email, payload.password)
+        .then((response) => {
+          commit('setUser', response.user.uid)
+          commit('setStatus', 'success')
+          commit('setError', null)
+        })
+        .catch((error) => {
+          commit('setStatus', 'failure')
+          commit('setError', error.message)
+        })
+    },
+
+    signOutAction ({ commit }) {
+      firebase.auth().signOut()
+        .then(() => {
+          commit('setUser', null)
+          commit('setStatus', 'success')
+          commit('setError', null)
+        })
+        .catch((error) => {
+          commit('setStatus', 'failure')
+          commit('setError', error.message)
+        })
+    },
+    // Lib
+    getLibrary(context) {
+      const tunesRef = firebase.database().ref('tunes');
+      tunesRef.once('value', function(snapshot) {
+        const tunes = []
+        snapshot.forEach((childSnapshot) => {
+          var key = childSnapshot.key;
+          var val = childSnapshot.val();
+          tunes.push({
+            ...val,
+            uid: key
+          })
+        })
+        context.commit('setLibrary', tunes)
+      });
+    }
   }
 };

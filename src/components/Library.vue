@@ -11,7 +11,7 @@
 
 <script>
 import AddVideo from './AddVideo';
-import { mapState, mapMutations } from 'vuex';
+import { mapState, mapMutations, mapActions } from 'vuex';
 export default {
   name: "Library",
   components: {
@@ -21,8 +21,12 @@ export default {
     return  {
     }
   },
+  created() {
+    this.getLibrary()
+  },
   computed: {
     ...mapState({
+      user: state => state.user,
       queue: state => state.queue,
       library: state => state.library,
     }),
@@ -31,6 +35,9 @@ export default {
     },
   },
   methods: {
+    ...mapActions([
+      'getLibrary',
+    ]),
     ...mapMutations([
       'pushToQueue',
     ]),
