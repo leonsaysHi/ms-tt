@@ -1,44 +1,48 @@
 <template>
   <div>
-    <AddVideo class="mb-3" />
-    <ul class="list-group">
-      <li class="list-group-item" v-for="(item, idx) in items" :key="idx"><a @click="pushToQueue(item)">
-        <strong>{{ item.title }}</strong>
-      </a></li>
+    <LibraryHeader />
+    <ul class="list-group mt-2">
+      <li class="list-group-item p-3" v-for="row in rows" :key="row.video_uid">
+        <Item @add-to-queue="pushToQueue(row)" :item="row" />
+      </li>
     </ul>
   </div>
 </template>
 
 <script>
-import AddVideo from './AddVideo';
+import LibraryHeader from './library/LibraryHeader';
+import Item from './library/LibraryItem';
 import { mapState, mapMutations, mapActions } from 'vuex';
 export default {
   name: "Library",
   components: {
-    AddVideo,
+    LibraryHeader,
+    Item,
   },
   data() {
     return  {
+      showAddModal: false
     }
   },
   created() {
     this.getLibrary()
   },
   computed: {
-    ...mapState({
-      user: state => state.user,
+    ...mapState("Library", {
       queue: state => state.queue,
-      library: state => state.library,
+      library: state => state.rows,
     }),
-    items() {
-      return _.difference(this.library, this.queue)
-    },
+    rows() {
+      const rows = this.library.slice()
+      rows.reverse()
+      return rows
+    }
   },
   methods: {
-    ...mapActions([
-      'getLibrary',
-    ]),
-    ...mapMutations([
+    ...mapActions("Library", {
+      getLibrary: 'getRows',
+    }),
+    ...mapMutations("Library", [
       'pushToQueue',
     ]),
   },

@@ -16,7 +16,7 @@ export default {
     return { }
   },
   computed: {
-    ...mapState([
+    ...mapState("Library", [
       'control',
       'queue',
     ]),
@@ -31,7 +31,7 @@ export default {
     },
   },
   methods: {
-    ...mapMutations([
+    ...mapMutations("Library", [
       'removeFromQueue',
       'playQueue',
     ]),

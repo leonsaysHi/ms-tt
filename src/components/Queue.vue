@@ -45,7 +45,7 @@ export default {
     }
   },
   computed: {
-    ...mapState([
+    ...mapState("Library", [
       'queue',
       'control',
     ]),
@@ -69,7 +69,7 @@ export default {
     }
   },
   methods: {
-    ...mapMutations([
+    ...mapMutations("Library", [
       'removeFromQueue',
     ]),
     ended() {
@@ -95,7 +95,6 @@ export default {
       if (state.data === 1) {
         // this.updateVideoCurrentTime()
       }
-      window.console.log(state.target.getVideoData())
     },
   },
 };
