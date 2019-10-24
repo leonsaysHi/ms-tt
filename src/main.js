@@ -5,9 +5,9 @@ import firebase from 'firebase';
 import Vue from "vue";
 import VueYoutube from "vue-youtube";
 import Vuex from "vuex";
-import router from '@/router'
 import App from '@/App.vue'
-import store from '@/store'
+import router from '@/router.js'
+import store from '@/store/index.js'
 
 firebase.initializeApp({
   apiKey: "AIzaSyC8_oLEhspnHIrNMZLDb0ALlB_wluc_NhE",
@@ -22,7 +22,7 @@ firebase.initializeApp({
 
 import BootstrapVue from 'bootstrap-vue'
 Vue.use(BootstrapVue)
-
+Vue.use(require('vue-moment'));
 Vue.use(VueYoutube);
 Vue.use(Vuex);
 Vue.config.productionTip = false;
@@ -32,6 +32,6 @@ Vue.directive('time', require('./directives/formatTime.js').default);
 
 new Vue({
   router,
-  store: new Vuex.Store(store),
+  store,
   render: h => h(App)
 }).$mount("#app");

@@ -39,7 +39,7 @@ export default {
         email: this.email,
         password: this.password
       }
-      this.$store.dispatch('signInAction', user)
+      this.$store.dispatch('User/signInAction', user)
     }
   }
 }
