@@ -12,8 +12,9 @@
 </template>
 
 <script>
+import firebase from 'firebase'
 import AddVideo from './AddVideo';
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapMutations } from 'vuex';
 export default {
   name: "LibraryHeader",
   components: {
@@ -32,11 +33,13 @@ export default {
     }),
   },
   methods: {
-    ...mapActions("User", {
-      logout: 'logout',
+    ...mapMutations("User", {
+      deleteUser: 'deleteUser',
     }),
     handleLogout() {
-      this.logout()
+      firebase.auth().signOut().then(() => {
+        this.deleteUser()
+      })
     }
   },
 };

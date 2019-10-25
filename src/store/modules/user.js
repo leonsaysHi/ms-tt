@@ -11,7 +11,7 @@ export default {
     setUser (state, payload) {
       state.user = payload
     },
-    removeUser (state) {
+    deleteUser (state) {
       state.user = null
     },
   },

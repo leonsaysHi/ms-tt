@@ -8,7 +8,7 @@
 <script>
 
 import Queue from "@/components/Queue";
-import Library from "@/components/library/Library";
+import Library from "@/components/Library";
 export default {
   name: "Main",
   components: {
