@@ -3,7 +3,6 @@ export default {
   namespaced: true,
   strict: process.env.NODE_ENV !== 'production',
   state: {
-    error: null,
     user: {
       uid: "xKx1RNmIfNcLT4XqUh3IZ3jlOkx1" //"yG2OtYEEvRP8emQeyhmnmKWeCjj1"
     }
@@ -12,42 +11,50 @@ export default {
     setUser (state, payload) {
       state.user = payload
     },
-    setError (state, payload) {
-      state.error = payload
-    },
-    logout (state) {
+    removeUser (state) {
       state.user = null
-    }
+    },
   },
   actions: {
-    signUp ({ commit }, payload) {
+    signUpAction ({ commit }, payload) {
       commit('setStatus', 'loading')
       firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
         .then((response) => {
           alert('success')
           // response will have user
           // user will have uid will be updated to the state
-          commit('setUser', response.user)
+          commit('setUser', response.user.uid)
+          commit('setStatus', 'success')
           commit('setError', null)
         })
         .catch((error) => {
+          commit('setStatus', 'failure')
           commit('setError', error.message)
         })
     },
-    login ({ commit }, payload) {
+    signInAction ({ commit }, payload) {
       firebase.auth().signInWithEmailAndPassword(payload.email, payload.password)
         .then((response) => {
-          commit('setUser', response.user)
+          commit('setUser', response.user.uid)
+          commit('setStatus', 'success')
           commit('setError', null)
         })
         .catch((error) => {
+          commit('setStatus', 'failure')
           commit('setError', error.message)
         })
     },
-    logout: function({ commit }) {
-      firebase.auth().signOut().then(() => {
-        commit('logout')
-      })
+    signOutAction ({ commit }) {
+      firebase.auth().signOut()
+        .then(() => {
+          commit('setUser', null)
+          commit('setStatus', 'success')
+          commit('setError', null)
+        })
+        .catch((error) => {
+          commit('setStatus', 'failure')
+          commit('setError', error.message)
+        })
     },
   },
 };
