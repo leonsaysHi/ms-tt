@@ -32,7 +32,7 @@ export default {
       queue: state => state.queue,
     }),
     isOwner() {
-      return this.item.user_uid === this.user.uid
+      return this.item.uid === this.user.uid
     },
     isInQueue() {
       return !!this.queue.find(i => i.video_id === this.item.video_id)

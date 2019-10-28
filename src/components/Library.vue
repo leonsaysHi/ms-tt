@@ -1,11 +1,13 @@
 <template>
-  <div>
+  <div class="flex-grow-1 d-flex flex-column align-items-stretch">
     <LibraryHeader />
-    <ul class="list-group mt-2">
-      <li class="list-group-item p-3" v-for="row in rows" :key="row.video_uid">
-        <Item @add-to-queue="pushToQueue(row)" :item="row" />
-      </li>
-    </ul>
+    <div class="flex-grow-1 mt-2 position-relative"><div class="overflow-auto">
+      <ul class="list-group">
+        <li class="list-group-item p-3" v-for="row in rows" :key="row.video_uid">
+          <Item @add-to-queue="pushToQueue(row)" :item="row" />
+        </li>
+      </ul>
+    </div></div>
   </div>
 </template>
 
@@ -25,7 +27,7 @@ export default {
     }
   },
   created() {
-    this.getLibrary()
+    this.initLibrary()
   },
   computed: {
     ...mapState("Library", {
@@ -40,7 +42,7 @@ export default {
   },
   methods: {
     ...mapActions("Library", {
-      getLibrary: 'getRows',
+      initLibrary: 'getRows',
     }),
     ...mapMutations("Library", [
       'pushToQueue',
@@ -48,3 +50,13 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+  .position-relative > .overflow-auto {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+  }
+</style>

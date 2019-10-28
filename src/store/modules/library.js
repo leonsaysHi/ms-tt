@@ -1,4 +1,3 @@
-import firebase from 'firebase'
 export default {
   namespaced: true,
   strict: process.env.NODE_ENV !== 'production',
@@ -20,7 +19,7 @@ export default {
       const rowIdx = state.rows.findIndex(v => v.video_id === video_id)
       state.rows.splice((rowIdx-1), 1)
     },
-    rowErrored(state, {video_id}) {
+    rowErrored(state, video_id) {
       let
         rowIdx = state.rows.findIndex(v => v.video_id === video_id),
         row = { ...state.rows[rowIdx] }
@@ -28,7 +27,7 @@ export default {
       row.isError = true
       state.rows.splice(rowIdx, 1, row)
     },
-    rowSaved(state, {video_id}) {
+    rowSaved(state, video_id) {
       let
         rowIdx = state.rows.findIndex(v => v.video_id === video_id),
         row = { ...state.rows[rowIdx] }
@@ -57,40 +56,33 @@ export default {
     saveRow({ commit, rootState }, { video_id, title }) {
       const payload = {
         title,
-        user_uid: rootState.User.user.uid,
+        video_id,
+        uid: rootState.User.user.uid,
         date: new Date().getTime(),
+        group_id: rootState.Groups.currentId,
       }
-      commit('pushToRows', { ...payload, video_id, isWorking: true })
-      firebase.database().ref('tunes/' + video_id).set(
-        payload,
-        function(error) {
-          if (error) {
-            commit('rowErrored', {video_id})
-          } else {
-            commit('rowSaved', {video_id})
-          }
-        }
-      );
+      commit('pushToRows', { ...payload, isWorking: true })
+      var tunesRef = window.db.collection("tunes")
+      tunesRef.add(payload)
+        .then(() => {
+          commit('rowSaved', video_id)
+        })
+        .catch(() => {
+          commit('rowErrored', video_id)
+        })
     },
     deleteRow(context, video_id) {
-      firebase.database().ref('tunes/' + video_id).remove()
+      var tunesRef = window.db.collection("tunes").doc(video_id)
+      tunesRef.delete()
     },
-    getRows({ commit }) {
-      const tunesRef = firebase.database().ref('tunes').orderByChild('date');
-      tunesRef.once('value', function(snapshot) {
-        const tunes = []
-        snapshot.forEach((childSnapshot) => {
-          var key = childSnapshot.key;
-          var val = childSnapshot.val();
-          tunes.push({
-            video_id: key,
-            ...val,
-          })
+    getRows({ commit, rootState }) {
+      var tunesRef = window.db.collection("tunes").where("group_id", "==", rootState.Groups.currentId)
+      tunesRef.onSnapshot(function(querySnapshot) {
+        const rows = []
+        querySnapshot.forEach(function(doc) {
+            rows.push(doc.data())
         })
-        commit('setLibrary', tunes)
-      });
-      tunesRef.on('child_removed', function(data) {
-        commit('popFromRows', data.video_id)
+        commit('setLibrary', rows)
       });
     },
   },

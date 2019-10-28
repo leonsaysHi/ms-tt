@@ -1,7 +1,9 @@
 window._ = require('lodash');
 window.axios = require('axios');
 
-import firebase from 'firebase';
+const firebase = require("firebase");
+require("firebase/firestore");
+
 import Vue from "vue";
 import VueYoutube from "vue-youtube";
 import Vuex from "vuex";
@@ -12,13 +14,9 @@ import store from '@/store/index.js'
 firebase.initializeApp({
   apiKey: "AIzaSyC8_oLEhspnHIrNMZLDb0ALlB_wluc_NhE",
   authDomain: "ms-turn-table.firebaseapp.com",
-  databaseURL: "https://ms-turn-table.firebaseio.com",
   projectId: "ms-turn-table",
-  storageBucket: "ms-turn-table.appspot.com",
-  messagingSenderId: "180128494081",
-  appId: "1:180128494081:web:4e3abaa2b00bec517ac600",
-  measurementId: "G-HHCG4KZ50T"
-})
+});
+window.db = firebase.firestore();
 
 import BootstrapVue from 'bootstrap-vue'
 Vue.use(BootstrapVue)
