@@ -20,7 +20,7 @@ export default {
       const rowIdx = state.rows.findIndex(v => v.video_id === video_id)
       state.rows.splice((rowIdx-1), 1)
     },
-    rowErrored(state, {video_id}) {
+    rowErrored(state, video_id) {
       let
         rowIdx = state.rows.findIndex(v => v.video_id === video_id),
         row = { ...state.rows[rowIdx] }
@@ -28,7 +28,7 @@ export default {
       row.isError = true
       state.rows.splice(rowIdx, 1, row)
     },
-    rowSaved(state, {video_id}) {
+    rowSaved(state, video_id) {
       let
         rowIdx = state.rows.findIndex(v => v.video_id === video_id),
         row = { ...state.rows[rowIdx] }
@@ -65,9 +65,9 @@ export default {
         payload,
         function(error) {
           if (error) {
-            commit('rowErrored', {video_id})
+            commit('rowErrored', video_id)
           } else {
-            commit('rowSaved', {video_id})
+            commit('rowSaved', video_id)
           }
         }
       );
@@ -75,8 +75,8 @@ export default {
     deleteRow(context, video_id) {
       firebase.database().ref('tunes/' + video_id).remove()
     },
-    getRows({ commit }) {
-      const tunesRef = firebase.database().ref('tunes').orderByChild('date');
+    getRows({ commit }, { group_id }) {
+      const tunesRef = firebase.database().ref('tunes').equalTo(group_id, 'group_id').orderByChild('date');
       tunesRef.once('value', function(snapshot) {
         const tunes = []
         snapshot.forEach((childSnapshot) => {

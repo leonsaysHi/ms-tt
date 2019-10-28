@@ -58,7 +58,7 @@ export default {
         (resp) => {
           const { displayName, email, uid } = resp.user
           this.setUser({ displayName, email, uid })
-          this.$router.replace('Home')
+          this.$router.replace('/home')
         },
         (err) => {
           alert('Oops. ' + err.message)

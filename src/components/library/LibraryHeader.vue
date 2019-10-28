@@ -7,14 +7,12 @@
       id="modal-add-row"
       hide-footer
     ><AddVideo /></b-modal>
-    <b-button class="ml-auto" variant="outline-primary" @click="handleLogout">logout</b-button>
   </div>
 </template>
 
 <script>
-import firebase from 'firebase'
 import AddVideo from './AddVideo';
-import { mapState, mapMutations } from 'vuex';
+import { mapState } from 'vuex';
 export default {
   name: "LibraryHeader",
   components: {
@@ -31,16 +29,6 @@ export default {
     ...mapState("User", {
       user: state => state.user,
     }),
-  },
-  methods: {
-    ...mapMutations("User", {
-      deleteUser: 'deleteUser',
-    }),
-    handleLogout() {
-      firebase.auth().signOut().then(() => {
-        this.deleteUser()
-      })
-    }
   },
 };
 </script>

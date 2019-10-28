@@ -1,13 +1,17 @@
 <template>
   <div id="app">
-    <router-view></router-view>
+    <Header />
+  <b-container fluid class="py-3"><router-view></router-view></b-container>
   </div>
 </template>
 
 <script>
-
+import Header from './components/Header';
 export default {
   name: "App",
+  components: {
+    Header
+  },
 };
 </script>
 
@@ -15,7 +19,7 @@ export default {
   @import "./bootstrap.scss";
   #app {
     min-height: 100vh;
-    > * {
+    > div {
       overflow-y: auto;
       overflow-x: hidden;
     }

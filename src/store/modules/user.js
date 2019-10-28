@@ -3,9 +3,7 @@ export default {
   namespaced: true,
   strict: process.env.NODE_ENV !== 'production',
   state: {
-    user: {
-      uid: "xKx1RNmIfNcLT4XqUh3IZ3jlOkx1" //"yG2OtYEEvRP8emQeyhmnmKWeCjj1"
-    }
+    user: {}
   },
   mutations: {
     setUser (state, payload) {
@@ -55,6 +53,14 @@ export default {
           commit('setStatus', 'failure')
           commit('setError', error.message)
         })
+    },
+    getInfos ({ commit }) {
+      var user = firebase.auth().currentUser;
+      if (user != null) {
+        user.providerData.forEach(function (profile) {
+          commit('setUser', profile)
+        });
+      }
     },
   },
 };

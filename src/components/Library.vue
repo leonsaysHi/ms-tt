@@ -25,9 +25,14 @@ export default {
     }
   },
   created() {
-    this.getLibrary()
+    if (this.$route.params.group_id) {
+      this.getLibrary({ group_id: this.$route.params.group_id })
+    }
   },
   computed: {
+    ...mapState("Groups", {
+      currentGroup: state => state.current,
+    }),
     ...mapState("Library", {
       queue: state => state.queue,
       library: state => state.rows,
