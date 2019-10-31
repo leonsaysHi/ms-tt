@@ -1,5 +1,5 @@
 <template>
-  <b-card no-body>
+  <b-card no-body class="flex-grow-1 m-2">
     <b-tabs pills card>
       <b-tab title="Profile" active>
         <b-form-group
