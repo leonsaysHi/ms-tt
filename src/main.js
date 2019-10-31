@@ -37,9 +37,6 @@ firebase.auth().onAuthStateChanged((user) => {
       store,
       render: h => h(App)
     }).$mount('#app');
-    const { displayName, email, uid } = user
-    app.$store.commit('User/setUser', { displayName, email, uid })
-    app.$store.dispatch('Groups/getRows')
   }
   else if (!user){
     router.replace('login')
