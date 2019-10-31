@@ -30,6 +30,9 @@ export default {
     this.initLibrary()
   },
   computed: {
+    ...mapState("Groups", {
+      currentGroup: state => state.current,
+    }),
     ...mapState("Library", {
       queue: state => state.queue,
       library: state => state.rows,

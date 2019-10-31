@@ -54,5 +54,13 @@ export default {
           commit('setError', error.message)
         })
     },
+    getInfos ({ commit }) {
+      var user = firebase.auth().currentUser;
+      if (user != null) {
+        user.providerData.forEach(function (profile) {
+          commit('setUser', profile)
+        });
+      }
+    },
   },
 };
