@@ -15,7 +15,7 @@ export default {
   },
   mutations: {
     setCurrent(state, group_id) {
-      state.currentId = group_id
+      state.currentId = group_id || null
     },
     setGroups(state, rows) {
       state.rows = [ ...rows ]
@@ -46,8 +46,10 @@ export default {
   },
   getters: {
     currentGroup(state) {
-      const group = state.rows ? state.rows.find(g => g.group_id === state.currentId) : null
-      return group || null
+      if (!_.isArray(state.rows) || !state.currentId) {
+        return null
+      }
+      return state.rows.find(g => g.group_id === state.currentId) || null
     }
   },
   actions: {

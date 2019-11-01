@@ -1,3 +1,4 @@
+const firebase = require("firebase");
 export default {
   namespaced: true,
   strict: process.env.NODE_ENV !== 'production',
@@ -9,8 +10,8 @@ export default {
     },
   },
   mutations: {
-    setLibrary(state, list) {
-      state.rows = list
+    setRows(state, list) {
+      state.rows = list || []
     },
     pushToRows(state, item) {
       state.rows.unshift(item)
@@ -54,16 +55,18 @@ export default {
   },
   actions: {
     saveRow({ commit, rootState }, { video_id, title }) {
-      const payload = {
-        title,
-        video_id,
-        uid: rootState.User.user.uid,
-        date: new Date().getTime(),
-        group_id: rootState.Groups.currentId,
-      }
+      const
+        payload = {
+          title,
+          video_id,
+          uid: rootState.User.user.uid,
+          date: new Date().getTime(),
+        }
       commit('pushToRows', { ...payload, isWorking: true })
-      var tunesRef = window.db.collection("tunes")
-      tunesRef.add(payload)
+      var tunesRef = window.db.collection("groups").doc(rootState.Groups.currentId)
+      tunesRef.update({
+        tunes: firebase.firestore.FieldValue.arrayUnion(payload)
+      })
         .then(() => {
           commit('rowSaved', video_id)
         })
@@ -74,16 +77,6 @@ export default {
     deleteRow(context, video_id) {
       var tunesRef = window.db.collection("tunes").doc(video_id)
       tunesRef.delete()
-    },
-    getRows({ commit, rootState }) {
-      var tunesRef = window.db.collection("tunes").where("group_id", "==", rootState.Groups.currentId)
-      tunesRef.onSnapshot(function(querySnapshot) {
-        const rows = []
-        querySnapshot.forEach(function(doc) {
-            rows.push(doc.data())
-        })
-        commit('setLibrary', rows)
-      });
     },
   },
 };

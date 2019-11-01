@@ -52,7 +52,7 @@ export default {
                 .catch((error) => {
                   this.isQuitingError = { message: 'Error', error }
                   this.isWorking = false
-                })
+                })       
             }
           } else {
             this.isQuitingError = { message: 'Can not find group' }

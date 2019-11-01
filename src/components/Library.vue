@@ -14,7 +14,7 @@
 <script>
 import LibraryHeader from './library/LibraryHeader';
 import Item from './library/LibraryItem';
-import { mapState, mapMutations, mapActions } from 'vuex';
+import { mapState, mapMutations, mapGetters } from 'vuex';
 export default {
   name: "Library",
   components: {
@@ -23,15 +23,29 @@ export default {
   },
   data() {
     return  {
-      showAddModal: false
+      showAddModal: false,
+      currentGroupListener: null,
     }
   },
   created() {
-    this.initLibrary()
+    const
+      sl = this.setLibrary,
+      group_id = this.currentGroup.group_id
+    this.currentGroupListener = window.db.collection("groups").doc(group_id)
+      .onSnapshot(function(doc) {
+        if (doc.exists) {
+          sl(doc.data().tunes)
+        } else {
+          window.console.log("No such document!");
+        }})
+  },
+  beforeDestroy() {
+    this.$data['currentGroupListener']()
+    this.setLibrary()
   },
   computed: {
-    ...mapState("Groups", {
-      currentGroup: state => state.current,
+    ...mapGetters("Groups", {
+      currentGroup: 'currentGroup',
     }),
     ...mapState("Library", {
       queue: state => state.queue,
@@ -44,12 +58,10 @@ export default {
     }
   },
   methods: {
-    ...mapActions("Library", {
-      initLibrary: 'getRows',
+    ...mapMutations("Library", {
+      setLibrary: 'setRows',
+      pushToQueue: 'pushToQueue',
     }),
-    ...mapMutations("Library", [
-      'pushToQueue',
-    ]),
   },
 };
 </script>

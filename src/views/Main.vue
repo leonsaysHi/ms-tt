@@ -17,20 +17,15 @@ export default {
     Library,
     Queue,
   },
-  data() {
-    return  {
-    }
-  },
-  created() {
-    if (this.$route.params.group_id) {
-      this.setCurrentGroupId(this.$route.params.group_id)
-    }
+  beforeDestroy() {
+    this.setCurrentGroupId()
   },
   watch: {
-    currentGroupId: function(val) {
-      if (val) {
+    currentGroupId: {
+      handler: function(val) {
         this.setCurrentGroupId(val)
-      }
+      },
+      immediate: true,
     }
   },
   computed: {

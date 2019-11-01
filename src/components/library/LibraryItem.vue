@@ -2,7 +2,7 @@
   <div class="d-flex align-items-start">
     <b-button :variant="isInQueue ? '' : 'primary'" :disabled="isInQueue" @click="$emit('add-to-queue')" size="sm" class="mr-2">+</b-button>
     <div class="title">
-      <small>{{ item.user_uid }} - {{ item.date | moment("from") }}</small>
+      <small>{{ item.uid }} - {{ item.date | moment("from") }}</small>
       <br><strong :class="{'text-muted': item.isWorking, 'text-danger': item.isErrored}">{{ item.title }} </strong>
     </div>
     <div class="ml-auto">
