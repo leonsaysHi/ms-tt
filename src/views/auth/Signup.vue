@@ -69,7 +69,7 @@ export default {
       firebase.auth().createUserWithEmailAndPassword(this.email, this.password).then(
         (user) => {
           this.setUser(user)
-          this.$router.replace('Home')
+          this.$router.replace({ name: 'Home' })
         },
         (err) => {
           alert('Oops. ' + err.message)

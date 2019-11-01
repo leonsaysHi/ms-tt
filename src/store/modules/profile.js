@@ -3,17 +3,20 @@ export default {
   namespaced: true,
   strict: process.env.NODE_ENV !== 'production',
   state: {
-    user: {
-      uid: "xKx1RNmIfNcLT4XqUh3IZ3jlOkx1" //"yG2OtYEEvRP8emQeyhmnmKWeCjj1"
-    }
+    user: null
   },
   mutations: {
-    setUser (state, payload) {
-      state.user = payload
+    setUser (state, { uid, displayName, email }) {
+      state.user = { uid, displayName, email }
     },
     deleteUser (state) {
       state.user = null
     },
+  },
+  getters: {
+    uid(state) {
+      return _.get(state.user, 'uid', null)
+    }
   },
   actions: {
     signUpAction ({ commit }, payload) {
@@ -55,6 +58,14 @@ export default {
           commit('setStatus', 'failure')
           commit('setError', error.message)
         })
+    },
+    getInfos ({ commit }) {
+      var user = firebase.auth().currentUser;
+      if (user != null) {
+        user.providerData.forEach(function (profile) {
+          commit('setUser', profile)
+        });
+      }
     },
   },
 };

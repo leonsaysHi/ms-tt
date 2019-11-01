@@ -54,16 +54,20 @@ export default {
       setUser: 'setUser',
     }),
     loginWithFirebase () {
-      firebase.auth().signInWithEmailAndPassword(this.email, this.password).then(
-        (resp) => {
-          const { displayName, email, uid } = resp.user
-          this.setUser({ displayName, email, uid })
-          this.$router.replace('Home')
-        },
-        (err) => {
-          alert('Oops. ' + err.message)
-        }
-      );
+      firebase.auth().signInWithEmailAndPassword(this.email, this.password)
+        .then(
+          (resp) => {
+            const { displayName, email, uid } = resp.user
+            this.setUser({ displayName, email, uid })
+            this.$router.replace({ name: 'Home' })
+          },
+          (err) => {
+            alert('Oops. ' + err.message)
+          }
+        )
+        .catch( err => {
+          window.console.log(err)
+        })
     }
   }
 }
