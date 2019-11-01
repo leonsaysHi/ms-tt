@@ -62,14 +62,13 @@ export default {
   }),
 
   methods: {
-    ...mapActions("User", {
-      setUser: 'setUser',
+    ...mapActions("Profile", {
+      initUser: 'initUser',
     }),
     signUp: function() {
       firebase.auth().createUserWithEmailAndPassword(this.email, this.password).then(
         (user) => {
-          this.setUser(user)
-          this.$router.replace({ name: 'Home' })
+          this.initUser(user)
         },
         (err) => {
           alert('Oops. ' + err.message)
