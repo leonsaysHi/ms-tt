@@ -47,8 +47,6 @@ export default {
       player: null,
       playerVars: {
         autoplay: 0,
-        width: 200,
-        height: 150,
         controls: 0,
         modestbranding: 1,
       },
@@ -128,8 +126,10 @@ export default {
 <style lang="scss" scoped>
   .player {
     width: 200px;
-    height: 150px;
+    position:relative;
     ::v-deep iframe {
+      position: absolute;
+      top: 0;
       width: 100%;
       height: 100%;
     }

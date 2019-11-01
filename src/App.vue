@@ -9,7 +9,7 @@
 
 <script>
 import firebase from 'firebase';
-import { mapGetters, mapMutations, mapActions } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 import Header from './components/Header';
 export default {
   name: "App",
@@ -19,13 +19,28 @@ export default {
   data() {
     return {
       isWorking: true,
+      currentGroupsListener: null,
     }
   },
   created() {
     firebase.auth().onAuthStateChanged(async (user) => {
       if (user) {
         await this.setUser(user)
-        this.initGroups(this.userId)
+        const
+          updateStore = this.setGroups
+        this.currentGroupsListener = window.db.collection("groups").where("users", "array-contains", this.userId)
+          .onSnapshot(function(querySnapshot) {
+            const groups = []
+            querySnapshot.forEach(function(doc) {
+              groups.push({ group_id: doc.id, ...doc.data()})
+            });
+            updateStore(groups)
+          });
+      }
+      else {
+        if (this.currentGroupsListener) {
+          this.$data['currentGroupsListener']()
+        }
       }
     })
   },
@@ -38,8 +53,8 @@ export default {
     ...mapMutations("Profile", {
       setUser: 'setUser',
     }),
-    ...mapActions("Groups", {
-      initGroups: 'initGroups',
+    ...mapMutations("Groups", {
+      setGroups: 'setGroups',
     }),
   }
 };

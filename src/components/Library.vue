@@ -4,7 +4,11 @@
     <div class="flex-grow-1 mt-2 position-relative"><div class="overflow-auto">
       <ul class="list-group">
         <li class="list-group-item p-3" v-for="row in rows" :key="row.video_uid">
-          <Item @add-to-queue="pushToQueue(row)" :item="row" />
+          <Item
+            @queue="queueRow(row)"
+            @delete="deleteRow(row)"
+            :item="row"
+          />
         </li>
       </ul>
     </div></div>
@@ -24,13 +28,13 @@ export default {
   data() {
     return  {
       showAddModal: false,
-      currentGroupListener: null,
+      currentTunesListener: null,
     }
   },
   created() {
     const
       updateStore = this.setLibrary
-    this.currentGroupListener = window.db.collection("groups").doc(this.currentGroup.group_id).collection("tunes")
+    this.currentTunesListener = window.db.collection("groups").doc(this.currentGroup.group_id).collection("tunes")
       .onSnapshot(function(querySnapshot) {
         var tunes = [];
         querySnapshot.forEach(function(doc) {
@@ -40,7 +44,7 @@ export default {
       })
   },
   beforeDestroy() {
-    this.$data['currentGroupListener']()
+    this.$data['currentTunesListener']()
     this.resetLibrary()
   },
   computed: {
@@ -61,8 +65,17 @@ export default {
     ...mapMutations("Library", {
       resetLibrary: 'reset',
       setLibrary: 'setRows',
-      pushToQueue: 'pushToQueue',
+      queueRow: 'pushToQueue',
     }),
+    deleteRow(row) {
+      window.db.collection("groups").doc(this.currentGroup.group_id).collection("tunes").doc(row.video_id).delete()
+      .then(function() {
+        window.console.log("Document successfully deleted!");
+      }).catch(function(error) {
+        window.console.error("Error removing document: ", error);
+      })
+
+    }
   },
 };
 </script>

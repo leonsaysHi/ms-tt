@@ -53,15 +53,5 @@ export default {
     }
   },
   actions: {
-    initGroups({ commit }, uid) {
-      var groupsRef = window.db.collection("groups").where("users", "array-contains", uid)
-      groupsRef.onSnapshot(function(querySnapshot) {
-        const rows = []
-        querySnapshot.forEach(function(doc) {
-          rows.push({ group_id: doc.id, ...doc.data()})
-        });
-        commit('setGroups', rows)
-      });
-    },
   },
 };

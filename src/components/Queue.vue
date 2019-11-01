@@ -1,11 +1,12 @@
 <template>
   <div class="flex-grow-1 d-flex flex-column align-items-stretch">
     <Controls />
-    <youtube
-      ref="youtube"
-      class="w-100"
-      :player-vars="playerVars"
-    ></youtube>
+    <div class="player">
+      <youtube
+        ref="youtube"
+        :player-vars="playerVars"
+      ></youtube>
+    </div>
     <div class="flex-grow-1 position-relative"><div class="overflow-auto">
       <div
         v-for="(item) in queuedVideos"
@@ -33,8 +34,6 @@ export default {
   data() {
     return {
       playerVars: {
-        width: "100%",
-        resize: true,
         controls: 0,
         modestbranding: 1,
       },
@@ -111,5 +110,16 @@ export default {
     top: 0;
     right: 0;
     bottom: 0;
+  }
+  .player {
+    position:relative;
+    width: 100%;
+    padding-top: 50%;
+    ::v-deep iframe {
+      position: absolute;
+      top: 0;
+      width: 100%;
+      height: 100%;
+    }
   }
 </style>
