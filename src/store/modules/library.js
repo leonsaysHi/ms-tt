@@ -1,4 +1,3 @@
-const firebase = require("firebase");
 export default {
   namespaced: true,
   strict: process.env.NODE_ENV !== 'production',
@@ -10,6 +9,11 @@ export default {
     },
   },
   mutations: {
+    reset(state) {
+      state.rows = []
+      state.queue = []
+      state.control.currentItem = null
+    },
     setRows(state, list) {
       state.rows = list || []
     },
@@ -54,29 +58,5 @@ export default {
     },
   },
   actions: {
-    saveRow({ commit, rootState }, { video_id, title }) {
-      const
-        payload = {
-          title,
-          video_id,
-          uid: rootState.User.user.uid,
-          date: new Date().getTime(),
-        }
-      commit('pushToRows', { ...payload, isWorking: true })
-      var tunesRef = window.db.collection("groups").doc(rootState.Groups.currentId)
-      tunesRef.update({
-        tunes: firebase.firestore.FieldValue.arrayUnion(payload)
-      })
-        .then(() => {
-          commit('rowSaved', video_id)
-        })
-        .catch(() => {
-          commit('rowErrored', video_id)
-        })
-    },
-    deleteRow(context, video_id) {
-      var tunesRef = window.db.collection("tunes").doc(video_id)
-      tunesRef.delete()
-    },
   },
 };

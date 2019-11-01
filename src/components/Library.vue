@@ -29,19 +29,19 @@ export default {
   },
   created() {
     const
-      sl = this.setLibrary,
-      group_id = this.currentGroup.group_id
-    this.currentGroupListener = window.db.collection("groups").doc(group_id)
-      .onSnapshot(function(doc) {
-        if (doc.exists) {
-          sl(doc.data().tunes)
-        } else {
-          window.console.log("No such document!");
-        }})
+      updateStore = this.setLibrary
+    this.currentGroupListener = window.db.collection("groups").doc(this.currentGroup.group_id).collection("tunes")
+      .onSnapshot(function(querySnapshot) {
+        var tunes = [];
+        querySnapshot.forEach(function(doc) {
+          tunes.push(doc.data())
+        })
+        updateStore(tunes)
+      })
   },
   beforeDestroy() {
     this.$data['currentGroupListener']()
-    this.setLibrary()
+    this.resetLibrary()
   },
   computed: {
     ...mapGetters("Groups", {
@@ -59,6 +59,7 @@ export default {
   },
   methods: {
     ...mapMutations("Library", {
+      resetLibrary: 'reset',
       setLibrary: 'setRows',
       pushToQueue: 'pushToQueue',
     }),

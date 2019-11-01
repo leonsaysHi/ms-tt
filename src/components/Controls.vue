@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="btn-group btn-group-sm" role="group">
+    <div class="btn-group btn-group-sm mb-2" role="group">
       <button class="btn btn-secondary" :disabled="!canPlay" @click="play">Play</button>
       <button class="btn btn-secondary" :disabled="!canSkip" @click="skip">Next</button>
     </div>

@@ -26,7 +26,6 @@
 </template>
 
 <script>
-import firebase from 'firebase'
 import { mapState, mapMutations } from 'vuex';
 export default {
   data() {
@@ -39,14 +38,14 @@ export default {
     }),
   },
   methods: {
-    ...mapMutations("User", {
+    ...mapMutations("Profile", {
       deleteUser: 'deleteUser',
     }),
     selectGroup(group_id) {
       this.$router.push({ name:'Home', params: { group_id }})
     },
     handleLogout() {
-      firebase.auth().signOut().then(() => {
+      window.firebase.auth().signOut().then(() => {
         this.deleteUser()
       })
     }

@@ -53,12 +53,12 @@ export default {
     this.isWorking = false
   },
   computed: {
-    ...mapState("User", {
+    ...mapState("Profile", {
       user: state => state.user,
     }),
   },
   methods: {
-    ...mapMutations("User", {
+    ...mapMutations("Profile", {
       setUser: 'setUser',
     }),
     updateEmail () {

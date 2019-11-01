@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapGetters, mapActions } from 'vuex';
 export default {
   name: "LibraryItem",
   props: ['item'],
@@ -25,14 +25,17 @@ export default {
     }
   },
   computed: {
-    ...mapState("User", {
-      user: state => state.user,
+    ...mapGetters("Profile", {
+      userId: 'uid',
+    }),
+    ...mapGetters("Groups", {
+      currentGroup: 'currentGroup',
     }),
     ...mapState("Library", {
       queue: state => state.queue,
     }),
     isOwner() {
-      return this.item.uid === this.user.uid
+      return this.item.uid === this.userId
     },
     isInQueue() {
       return !!this.queue.find(i => i.video_id === this.item.video_id)
@@ -43,7 +46,7 @@ export default {
       remove: 'deleteRow',
     }),
     handleDelete() {
-      this.remove(this.item.video_id)
+      window.db.collection("groups").doc(this.currentGroup.group_id).collection("tunes").doc(this.item.video_id).remove()
     }
   },
 };

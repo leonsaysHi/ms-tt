@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapGetters, mapMutations } from 'vuex';
 export default {
   name: "AddVideo",
   data() {
@@ -60,6 +60,12 @@ export default {
     this.player.addEventListener('onError', this.playerError);
   },
   computed: {
+    ...mapGetters("Profile", {
+      userId: 'uid',
+    }),
+    ...mapState("Groups", {
+      groupId: 'currentId',
+    }),
     ...mapState("Library", {
       library: state => state.rows,
     }),
@@ -82,8 +88,10 @@ export default {
     }
   },
   methods: {
-    ...mapActions("Library", {
-      pushToLibrary: 'saveRow',
+    ...mapMutations("Library", {
+      pushToLibrary: 'pushToRows',
+      saveSuccess: 'rowSaved',
+      saveError: 'rowErrored',
     }),
     playerError () {
       this.state = false
@@ -93,7 +101,23 @@ export default {
       this.videoDatas = state.target.getVideoData()
     },
     add () {
-      this.pushToLibrary(this.videoDatas)
+      const
+        { video_id, title } = this.videoDatas,
+        payload = {
+          video_id,
+          title,
+          uid: this.userId,
+          date: new Date().getTime(),
+        }
+      this.pushToLibrary({ ...payload, isWorking: true })
+      var tunesRef = window.db.collection("groups").doc(this.groupId).collection('tunes')
+      tunesRef.doc(video_id).set(payload)
+        .then(() => {
+          this.saveSuccess(video_id)
+        })
+        .catch(() => {
+          this.saveError(video_id)
+        })
       this.urlInput = ''
       this.player.stopVideo()
     },

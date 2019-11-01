@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import firebase from 'firebase';
+import { mapGetters } from 'vuex';
 export default {
   props: ['item'],
   data() {
@@ -21,6 +21,9 @@ export default {
   async mounted () {
   },
   computed: {
+    ...mapGetters("Profile", {
+      userId: 'uid',
+    }),
   },
   methods: {
     quitGroup() {
@@ -30,7 +33,7 @@ export default {
           if (doc.exists) {
             const
               payload = doc.data(),
-              userId = firebase.auth().currentUser.uid
+              userId = this.userId
             payload.users = payload.users.filter( u => u !== userId)
             if (payload.users.length) {
               groupRef.update(payload)
@@ -52,7 +55,7 @@ export default {
                 .catch((error) => {
                   this.isQuitingError = { message: 'Error', error }
                   this.isWorking = false
-                })       
+                })
             }
           } else {
             this.isQuitingError = { message: 'Can not find group' }

@@ -9,7 +9,7 @@
 
 <script>
 import firebase from 'firebase';
-import { mapActions } from 'vuex';
+import { mapGetters, mapMutations, mapActions } from 'vuex';
 import Header from './components/Header';
 export default {
   name: "App",
@@ -24,12 +24,20 @@ export default {
   created() {
     firebase.auth().onAuthStateChanged(async (user) => {
       if (user) {
-        await this.$store.commit('User/setUser', user)
-        this.initGroups(user.uid)
+        await this.setUser(user)
+        this.initGroups(this.userId)
       }
     })
   },
+  computed: {
+    ...mapGetters("Profile", {
+      userId: 'uid',
+    }),
+  },
   methods: {
+    ...mapMutations("Profile", {
+      setUser: 'setUser',
+    }),
     ...mapActions("Groups", {
       initGroups: 'initGroups',
     }),

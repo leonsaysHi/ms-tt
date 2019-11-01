@@ -9,8 +9,7 @@
 </template>
 
 <script>
-import firebase from 'firebase';
-import { mapState, mapMutations } from 'vuex';
+import { mapState, mapGetters, mapMutations } from 'vuex';
 export default {
   data() {
     return {
@@ -22,6 +21,9 @@ export default {
   async mounted () {
   },
   computed: {
+    ...mapGetters("Profile", {
+      userId: 'uid',
+    }),
     ...mapState("Groups", {
       groupsList: 'rows',
     }),
@@ -43,8 +45,8 @@ export default {
           if (doc.exists) {
             const
               payload = doc.data(),
-              userId = firebase.auth().currentUser.uid
-            payload.users.push(userId)
+              uid = this.userId
+            payload.users.push(uid)
             groupRef.update(payload)
               .then(() => {
                 this.groupId = ''

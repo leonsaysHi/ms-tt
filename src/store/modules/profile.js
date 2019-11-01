@@ -3,7 +3,7 @@ export default {
   namespaced: true,
   strict: process.env.NODE_ENV !== 'production',
   state: {
-    user: {}
+    user: null
   },
   mutations: {
     setUser (state, { uid, displayName, email }) {
@@ -12,6 +12,11 @@ export default {
     deleteUser (state) {
       state.user = null
     },
+  },
+  getters: {
+    uid(state) {
+      return _.get(state.user, 'uid', null)
+    }
   },
   actions: {
     signUpAction ({ commit }, payload) {
