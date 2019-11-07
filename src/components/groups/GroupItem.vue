@@ -21,7 +21,7 @@ export default {
   async mounted () {
   },
   computed: {
-    ...mapGetters("Profile", {
+    ...mapGetters("User", {
       userId: 'uid',
     }),
   },

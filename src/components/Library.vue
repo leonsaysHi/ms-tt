@@ -1,29 +1,38 @@
 <template>
   <div class="flex-grow-1 d-flex flex-column align-items-stretch">
-    <LibraryHeader />
+    <LibraryHeader @add="toggleAddModal" />
     <div class="flex-grow-1 mt-2 position-relative"><div class="overflow-auto">
       <ul class="list-group">
         <li class="list-group-item p-3" v-for="row in rows" :key="row.video_uid">
           <Item
             @queue="queueRow(row)"
+            @share="shareRow(row)"
             @delete="deleteRow(row)"
             :item="row"
           />
         </li>
       </ul>
     </div></div>
+    <b-modal
+      size="lg"
+      v-model="showAddModal"
+      id="modal-add-row"
+      hide-footer
+    ><AddVideo /></b-modal>
   </div>
 </template>
 
 <script>
 import LibraryHeader from './library/LibraryHeader';
 import Item from './library/LibraryItem';
+import AddVideo from './library/AddVideo';
 import { mapState, mapMutations, mapGetters } from 'vuex';
 export default {
   name: "Library",
   components: {
     LibraryHeader,
     Item,
+    AddVideo,
   },
   data() {
     return  {
@@ -67,6 +76,9 @@ export default {
       setLibrary: 'setRows',
       queueRow: 'pushToQueue',
     }),
+    toggleAddModal() {
+      this.showAddModal = true
+    },
     deleteRow(row) {
       window.db.collection("groups").doc(this.currentGroup.group_id).collection("tunes").doc(row.video_id).delete()
       .then(function() {

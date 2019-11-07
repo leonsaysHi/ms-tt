@@ -38,8 +38,16 @@ const router = new Router({
       }
     },
     {
-      path: '/group/:group_id',
+      path: '/group',
       name: 'Home',
+      component: Main,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/group/:group_id',
+      name: 'GroupHome',
       component: Main,
       meta: {
         requiresAuth: true

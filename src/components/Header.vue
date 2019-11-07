@@ -38,11 +38,11 @@ export default {
     }),
   },
   methods: {
-    ...mapMutations("Profile", {
+    ...mapMutations("User", {
       deleteUser: 'deleteUser',
     }),
     selectGroup(group_id) {
-      this.$router.push({ name:'Home', params: { group_id }})
+      this.$router.push({ name:'GroupHome', params: { group_id }})
     },
     handleLogout() {
       window.firebase.auth().signOut().then(() => {

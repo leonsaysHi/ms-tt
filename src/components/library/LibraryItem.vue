@@ -8,7 +8,7 @@
     <div class="ml-auto">
       <b-spinner v-if="item.isWorking" small variant="primary" class="ml-2"></b-spinner>
       <b-dropdown id="dropdown-1" text="..." size="sm" class="ml-2">
-        <b-dropdown-item disabled>Edit</b-dropdown-item>
+        <b-dropdown-item @click="$emit('share')">Share</b-dropdown-item>
         <b-dropdown-item :disabled="!isOwner" @click="$emit('delete')"><span class="text-danger">Delete</span></b-dropdown-item>
       </b-dropdown>
     </div>
@@ -30,10 +30,10 @@ export default {
     }
   },
   computed: {
-    ...mapState("Profile", {
+    ...mapState("User", {
       user: 'user',
     }),
-    ...mapState("Users", {
+    ...mapState("Profiles", {
       usersList: 'rows',
     }),
     ...mapState("Library", {
@@ -53,7 +53,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions("Users", {
+    ...mapActions("Profiles", {
       getUser: 'getRow',
     }),
   },

@@ -50,7 +50,7 @@
 
 <script>
 import firebase from 'firebase';
-import { mapActions } from 'vuex';
+import { mapMutations } from 'vuex';
 export default {
 
   data: () => ({
@@ -62,13 +62,13 @@ export default {
   }),
 
   methods: {
-    ...mapActions("Profile", {
-      initUser: 'initUser',
+    ...mapMutations("User", {
+      initUser: 'setUser',
     }),
     signUp: function() {
       firebase.auth().createUserWithEmailAndPassword(this.email, this.password).then(
-        (user) => {
-          this.initUser(user)
+        () => {
+          // this.initUser(user)
         },
         (err) => {
           alert('Oops. ' + err.message)

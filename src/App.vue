@@ -42,6 +42,7 @@ export default {
           .onSnapshot(function(doc) {
             updateUserStore({ ...doc.data() });
           })
+        this.$router.push({ name:'Home' })
       }
       else {
         if (this.currentGroupsListener) {
@@ -52,12 +53,12 @@ export default {
     })
   },
   computed: {
-    ...mapGetters("Profile", {
+    ...mapGetters("User", {
       userId: 'uid',
     }),
   },
   methods: {
-    ...mapMutations("Profile", {
+    ...mapMutations("User", {
       setUser: 'setUser',
     }),
     ...mapMutations("Groups", {

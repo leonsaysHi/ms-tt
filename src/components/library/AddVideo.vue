@@ -13,19 +13,22 @@
         trim
       ></b-form-input>
     </b-form-group>
-    <div class="d-flex details">
-      <div class="player mr-2 border-right bg-dark">
-        <div :class="{'invisible': !videoId || videoId.length === 0}"><youtube
-          ref="youtube"
-          :player-vars="playerVars"
-        ></youtube></div>
+    <div class="d-flex align-items-start details">
+      <b-spinner  small variant="primary" v-if="videoId && !hasVideoDatas"></b-spinner>
+      <div class="player mr-2 border-right bg-dark" :class="{'align-self-stretch': hasVideoDatas}">
+        <div>
+          <youtube
+            ref="youtube"
+            :player-vars="playerVars"
+          />
+        </div>
       </div>
-      <div class="ml-2 flex-grow-1" v-if="videoDatas && videoDatas.title">
+      <div v-if="hasVideoDatas" class="ml-2 flex-grow-1">
         <b-form-group
           label="Title"
           label-for="input-title"
         >
-          <b-form-input id="input-title" v-model="videoDatas.title" :disabled="videoFromLibrary" :state="videoDatas.title.length > 0" trim></b-form-input>
+          <b-form-input id="input-title" v-model="videoDatas.title" :disabled="videoFromLibrary || !hasVideoDatas" :state="videoDatas.title.length > 0" trim></b-form-input>
         </b-form-group>
         <b-button v-if="videoFromLibrary" :disabled="true">Already added by ...</b-button>
         <b-button v-else variant="primary" @click="add">Add</b-button>
@@ -58,7 +61,7 @@ export default {
     this.player.addEventListener('onError', this.playerError);
   },
   computed: {
-    ...mapGetters("Profile", {
+    ...mapGetters("User", {
       userId: 'uid',
     }),
     ...mapState("Groups", {
@@ -73,15 +76,21 @@ export default {
         groups = this.urlInput.match(/^.*(youtu.be\/|v\/|e\/|u\/\w+\/|embed\/|v=)([^#&?]*).*/),
         video_id = (_.isArray(groups) && groups[2].length === 11) ? groups[2] : this.urlInput
       return (video_id.length == 11) ? video_id : null
-    }
+    },
+    hasVideoDatas() {
+      return !!(this.videoDatas && _.get(this.videoDatas, 'title'))
+    },
   },
   watch: {
     videoId: function(value) {
-      if (value && value.length > 0) {
+      if (value) {
         this.videoFromLibrary = this.library.find(row => row.video_id === value) || null
         this.state = true
         this.videoDatas = this.videoFromLibrary
         this.player.loadVideoById(value)
+      }
+      else {
+        this.videoDatas = null
       }
     }
   },
