@@ -50,6 +50,12 @@ export default {
         return null
       }
       return state.rows.find(g => g.group_id === state.currentId) || null
+    },
+    otherGroups(state) {
+      if (!_.isArray(state.rows) || !state.currentId) {
+        return []
+      }
+      return state.rows.filter(g => g.group_id !== state.currentId)
     }
   },
   actions: {

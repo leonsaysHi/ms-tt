@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="d-flex">
-      <b-form-input v-model="groupTitle" class="flex-grow-1 mr-2" />
+      <b-form-input v-model="groupTitle" class="flex-grow-1 mr-2" placeholder="Group name" />
       <b-button variant="primary" :disabled="isWorking" @click="handleCreateGroup">Create</b-button>
     </div>
     <div v-if="isError"><small class="text-danger">{{ isError.message }}</small></div>
@@ -21,7 +21,7 @@ export default {
   async mounted () {
   },
   computed: {
-    ...mapGetters("Profile", {
+    ...mapGetters("User", {
       userId: 'uid',
     }),
   },

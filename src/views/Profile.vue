@@ -13,7 +13,7 @@
           ></b-form-input>
         </b-form-group>
         <b-form-group
-          label="User name"
+          label="Username"
           label-for="input-displayName"
         >
           <b-form-input
@@ -53,12 +53,12 @@ export default {
     this.isWorking = false
   },
   computed: {
-    ...mapState("Profile", {
+    ...mapState("User", {
       user: state => state.user,
     }),
   },
   methods: {
-    ...mapMutations("Profile", {
+    ...mapMutations("User", {
       setUser: 'setUser',
     }),
     updateEmail () {

@@ -20,6 +20,7 @@ export default {
     return {
       isWorking: true,
       currentGroupsListener: null,
+      currentUserListener: null,
     }
   },
   created() {
@@ -27,30 +28,37 @@ export default {
       if (user) {
         await this.setUser(user)
         const
-          updateStore = this.setGroups
+          updateGroupsStore = this.setGroups,
+          updateUserStore = this.setUser
         this.currentGroupsListener = window.db.collection("groups").where("users", "array-contains", this.userId)
           .onSnapshot(function(querySnapshot) {
             const groups = []
             querySnapshot.forEach(function(doc) {
               groups.push({ group_id: doc.id, ...doc.data()})
             });
-            updateStore(groups)
+            updateGroupsStore(groups)
           });
+        this.currentUserListener = window.db.collection("users").doc(this.userId)
+          .onSnapshot(function(doc) {
+            updateUserStore({ ...doc.data() });
+          })
+        this.$router.push({ name:'Home' })
       }
       else {
         if (this.currentGroupsListener) {
           this.$data['currentGroupsListener']()
+          this.$data['currentUserListener']()
         }
       }
     })
   },
   computed: {
-    ...mapGetters("Profile", {
+    ...mapGetters("User", {
       userId: 'uid',
     }),
   },
   methods: {
-    ...mapMutations("Profile", {
+    ...mapMutations("User", {
       setUser: 'setUser',
     }),
     ...mapMutations("Groups", {
