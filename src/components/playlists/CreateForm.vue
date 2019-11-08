@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="d-flex">
-      <b-form-input v-model="groupTitle" class="flex-grow-1 mr-2" placeholder="Group name" />
-      <b-button variant="primary" :disabled="isWorking" @click="handleCreateGroup">Create</b-button>
+      <b-form-input v-model="values.title" class="flex-grow-1 mr-2" placeholder="New playlist's name" />
+      <b-button variant="primary" class="text-nowrap" :disabled="isWorking" @click="handleCreatePlaylist">Create new playlist</b-button>
     </div>
     <div v-if="isError"><small class="text-danger">{{ isError.message }}</small></div>
   </div>
@@ -13,7 +13,9 @@ import { mapGetters, mapMutations } from 'vuex';
 export default {
   data() {
     return {
-      groupTitle: '',
+      values: {
+        title: '',
+      },
       isWorking: false,
       isError: null,
     }
@@ -26,19 +28,19 @@ export default {
     }),
   },
   methods: {
-    ...mapMutations("Groups", {
+    ...mapMutations("Playlists", {
       pushToRows: 'pushToRows'
     }),
-    handleCreateGroup() {
+    handleCreatePlaylist() {
       this.isWorking = true
       this.isError = null
       const payload = {
-        title: this.groupTitle,
+        title: this.values.title,
         users: [this.userId],
       }
-      window.db.collection("groups").add(payload)
+      window.db.collection("playlists").add(payload)
       .then(() => {
-        this.groupTitle = ''
+        this.values.title = ''
         this.isWorking = false
       })
       .catch((error) => {

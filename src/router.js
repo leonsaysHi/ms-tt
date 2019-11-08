@@ -38,7 +38,7 @@ const router = new Router({
       }
     },
     {
-      path: '/group',
+      path: '/playlist',
       name: 'Home',
       component: Main,
       meta: {
@@ -46,8 +46,8 @@ const router = new Router({
       }
     },
     {
-      path: '/group/:group_id',
-      name: 'GroupHome',
+      path: '/playlist/:id',
+      name: 'PlaylistsHome',
       component: Main,
       meta: {
         requiresAuth: true

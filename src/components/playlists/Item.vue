@@ -2,8 +2,8 @@
   <div class="d-flex justify-content-between">
     <strong>{{ item.title }}</strong>
     <div>
-      <code class="p-1 border round">{{ item.group_id }}</code>
-      <b-button class="ml-2" :disabled="isWorking" variant="danger" @click="quitGroup">Quit</b-button>
+      <code class="p-1 border round">{{ item.id }}</code>
+      <b-button class="ml-2" :disabled="isWorking" variant="danger" @click="quitPlaylist">Quit</b-button>
     </div>
   </div>
 </template>
@@ -26,19 +26,18 @@ export default {
     }),
   },
   methods: {
-    quitGroup() {
+    quitPlaylist() {
       this.isQuitingError = null
-      var groupRef = window.db.collection("groups").doc(this.item.group_id)
-      groupRef.get().then((doc) => {
+      var playlistRef = window.db.collection("playlists").doc(this.item.id)
+      playlistRef.get().then((doc) => {
           if (doc.exists) {
             const
               payload = doc.data(),
               userId = this.userId
             payload.users = payload.users.filter( u => u !== userId)
             if (payload.users.length) {
-              groupRef.update(payload)
+              playlistRef.update(payload)
                 .then(() => {
-                  this.groupId = ''
                   this.isWorking = false
                 })
                 .catch((error) => {
@@ -47,9 +46,8 @@ export default {
                 })
             }
             else {
-              groupRef.delete()
+              playlistRef.delete()
                 .then(() => {
-                  this.groupId = ''
                   this.isWorking = false
                 })
                 .catch((error) => {
@@ -58,7 +56,7 @@ export default {
                 })
             }
           } else {
-            this.isQuitingError = { message: 'Can not find group' }
+            this.isQuitingError = { message: 'Can not find playlist' }
             this.isWorking = false
           }
       }).catch((error) => {

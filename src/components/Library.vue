@@ -47,7 +47,7 @@ export default {
   created() {
     const
       updateStore = this.setLibrary
-    this.currentTunesListener = window.db.collection("groups").doc(this.currentGroup.group_id).collection("tunes").orderBy("date")
+    this.currentTunesListener = window.db.collection("playlists").doc(this.currentPlaylist.id).collection("tunes").orderBy("date")
       .onSnapshot(function(querySnapshot) {
         var tunes = [];
         querySnapshot.forEach(function(doc) {
@@ -61,8 +61,8 @@ export default {
     this.resetLibrary()
   },
   computed: {
-    ...mapGetters("Groups", {
-      currentGroup: 'currentGroup',
+    ...mapGetters("Playlists", {
+      currentPlaylist: 'currentPlaylist',
     }),
     ...mapState("Library", {
       queue: state => state.queue,
@@ -84,9 +84,9 @@ export default {
       this.showAddModal = !this.showAddModal
     },
     handleAddRow(tune) {
-      this.addTune( this.groupId, tune)
+      this.addTune( this.currentPlaylist.id, tune)
         .then(() => {
-          this.$bvToast.toast('"' + tune.title + '" saved to group', {
+          this.$bvToast.toast('"' + tune.title + '" saved to playlist.', {
             title: 'Shared',
             variant: 'success',
             solid: true,
@@ -98,9 +98,9 @@ export default {
         })
     },
     deleteRow(tune) {
-      this.removeTune( this.currentGroup.group_id, tune)
+      this.removeTune( this.currentPlaylist.id, tune)
         .then(() => {
-          this.$bvToast.toast('"' + tune.title + '" removed from group', {
+          this.$bvToast.toast('"' + tune.title + '" removed from playlist.', {
             title: 'Removed',
             variant: 'success',
             solid: true,

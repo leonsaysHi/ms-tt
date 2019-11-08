@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="d-flex">
-      <b-form-input v-model="groupId" class="flex-grow-1 mr-2" placeholder="Copy group code here" />
-      <b-button variant="primary" :disabled="isWorking" @click="handleJoinGroup">Join</b-button>
+      <b-form-input v-model="values.id" class="flex-grow-1 mr-2" placeholder="Copy playlist's code here" />
+      <b-button variant="primary" class="text-nowrap" :disabled="isWorking" @click="handleJoinPlaylist">Join playlist</b-button>
     </div>
     <div v-if="isError"><small class="text-danger">{{ isError.message }}</small></div>
   </div>
@@ -13,7 +13,9 @@ import { mapState, mapGetters, mapMutations } from 'vuex';
 export default {
   data() {
     return {
-      groupId: '',
+      values: {
+        id: '',
+      },
       isWorking: false,
       isError: null,
     }
@@ -24,32 +26,32 @@ export default {
     ...mapGetters("User", {
       userId: 'uid',
     }),
-    ...mapState("Groups", {
-      groupsList: 'rows',
+    ...mapState("Playlists", {
+      playlistsList: 'rows',
     }),
   },
   methods: {
-    ...mapMutations("Groups", {
+    ...mapMutations("Playlists", {
       pushToRows: 'pushToRows'
     }),
-    handleJoinGroup() {
+    handleJoinPlaylist() {
       this.isWorking = true
       this.hasError = null
-      if (this.groupsList.find( g => g.group_id === this.groupId)) {
+      if (this.playlistsList.find( g => g.id === this.values.id)) {
         this.isWorking = false
         this.isError = { message: 'Already joined' }
         return
       }
-      var groupRef = window.db.collection("groups").doc(this.groupId)
-      groupRef.get().then((doc) => {
+      var playlistRef = window.db.collection("playlists").doc(this.values.id)
+      playlistRef.get().then((doc) => {
           if (doc.exists) {
             const
               payload = doc.data(),
               uid = this.userId
             payload.users.push(uid)
-            groupRef.update(payload)
+            playlistRef.update(payload)
               .then(() => {
-                this.groupId = ''
+                this.values.id = ''
                 this.isWorking = false
               })
               .catch((error) => {
@@ -57,7 +59,7 @@ export default {
                 this.isWorking = false
               });
           } else {
-            this.isError = { message: 'Can not find group' }
+            this.isError = { message: 'Can not find playlist' }
             this.isWorking = false
           }
       }).catch((error) => {

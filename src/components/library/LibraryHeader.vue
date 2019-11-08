@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex justify-content-between">
-    <h2>{{ currentGroup.title }}</h2>
-    <b-button @click="$emit('add')">Add tune</b-button>    
+    <h2>{{ currentPlaylist.title }}</h2>
+    <b-button @click="$emit('add')">New tune</b-button>    
   </div>
 </template>
 
@@ -16,8 +16,8 @@ export default {
   created() {
   },
   computed: {
-    ...mapGetters("Groups", {
-      currentGroup: 'currentGroup',
+    ...mapGetters("Playlists", {
+      currentPlaylist: 'currentPlaylist',
     }),
   },
 };

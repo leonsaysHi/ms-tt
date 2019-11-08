@@ -5,13 +5,13 @@
 
     <b-collapse is-nav>
       <b-navbar-nav>
-        <b-nav-item-dropdown text="Group" :disabled="!groupsList || groupsList.length === 0">
+        <b-nav-item-dropdown text="Playlists" :disabled="!playlists || playlists.length === 0">
           <b-dropdown-item
-            v-for="group in groupsList"
-            :key="group.group_id"
-            @click="selectGroup(group.group_id)"
-            :disabled="group.group_id === currentGroupsId"
-          >{{ group.title }}</b-dropdown-item>
+            v-for="playlist in playlists"
+            :key="playlist.id"
+            @click="selectPlaylist(playlist.id)"
+            :disabled="playlist.id === currentPlaylistId"
+          >{{ playlist.title }}</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
 
@@ -32,17 +32,17 @@ export default {
     return {}
   },
   computed: {
-    ...mapState("Groups", {
-      currentGroupsId: 'currentId',
-      groupsList: 'rows',
+    ...mapState("Playlists", {
+      currentPlaylistId: 'currentId',
+      playlists: 'rows',
     }),
   },
   methods: {
     ...mapMutations("User", {
       deleteUser: 'deleteUser',
     }),
-    selectGroup(group_id) {
-      this.$router.push({ name:'GroupHome', params: { group_id }})
+    selectPlaylist(id) {
+      this.$router.push({ name:'PlaylistsHome', params: { id }})
     },
     handleLogout() {
       window.firebase.auth().signOut().then(() => {

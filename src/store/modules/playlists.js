@@ -14,10 +14,10 @@ export default {
     }
   },
   mutations: {
-    setCurrent(state, group_id) {
-      state.currentId = group_id || null
+    setCurrent(state, id) {
+      state.currentId = id || null
     },
-    setGroups(state, rows) {
+    setPlaylists(state, rows) {
       state.rows = [ ...rows ]
     },
     pushToRows(state, item) {
@@ -27,17 +27,17 @@ export default {
       const rowIdx = state.rows.findIndex(v => v.id === id)
       state.rows.splice((rowIdx-1), 1)
     },
-    rowErrored(state, group_id) {
+    rowErrored(state, id) {
       let
-        rowIdx = state.rows.findIndex(v => v.video_id === group_id),
+        rowIdx = state.rows.findIndex(v => v.video_id === id),
         row = { ...state.rows[rowIdx] }
       delete row.isWorking
       row.isError = true
       state.rows.splice(rowIdx, 1, row)
     },
-    rowSaved(state, group_id) {
+    rowSaved(state, id) {
       let
-        rowIdx = state.rows.findIndex(v => v.group_id === group_id),
+        rowIdx = state.rows.findIndex(v => v.id === id),
         row = { ...state.rows[rowIdx] }
       delete row.isWorking
       row.isSaved = true
@@ -45,17 +45,17 @@ export default {
     },
   },
   getters: {
-    currentGroup(state) {
+    currentPlaylist(state) {
       if (!_.isArray(state.rows) || !state.currentId) {
         return null
       }
-      return state.rows.find(g => g.group_id === state.currentId) || null
+      return state.rows.find(g => g.id === state.currentId) || null
     },
-    otherGroups(state) {
+    otherPlaylists(state) {
       if (!_.isArray(state.rows) || !state.currentId) {
         return []
       }
-      return state.rows.filter(g => g.group_id !== state.currentId)
+      return state.rows.filter(g => g.id !== state.currentId)
     }
   },
   actions: {

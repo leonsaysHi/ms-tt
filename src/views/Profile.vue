@@ -26,7 +26,7 @@
         <b-button variant="primary" :disabled="isWorking" @click="saveAll">Save all</b-button>
         <b-spinner v-if="isWorking" small variant="primary" class="ml-2"></b-spinner>
       </b-tab>
-      <b-tab title="Groups"><Groups /></b-tab>
+      <b-tab title="Playlists"><Playlists /></b-tab>
     </b-tabs>
   </b-card>
 
@@ -35,11 +35,11 @@
 
 <script>
 import firebase from 'firebase';
-import Groups from '@/components/Groups.vue';
+import Playlists from '@/components/Playlists.vue';
 import { mapState, mapMutations } from 'vuex';
 export default {
   components: {
-   Groups
+   Playlists
   },
   data: () => ({
     displayName: '',
