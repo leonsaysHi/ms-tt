@@ -1,8 +1,8 @@
 <template>
     <div class="flex-grow-1 d-flex align-items-stretch justify-content-center">
-      <template v-if="currentGroup">
-        <div class="d-flex flex-column align-items-stretch flex-grow-1 p-2 border-right"><Library :key="currentGroupId" /></div>
-        <div class="d-flex flex-column align-items-stretch p-2 w-25"><Queue :key="currentGroupId" /></div>
+      <template v-if="currentPlaylist">
+        <div class="d-flex flex-column align-items-stretch flex-grow-1 p-2 border-right"><Library :key="currentPlaylistId" /></div>
+        <div class="d-flex flex-column align-items-stretch p-2 w-25"><Queue :key="currentPlaylistId" /></div>
       </template>
     </div>
 </template>
@@ -18,27 +18,27 @@ export default {
     Queue,
   },
   beforeDestroy() {
-    this.setCurrentGroupId()
+    this.setcurrentPlaylistId()
   },
   watch: {
-    currentGroupId: {
+    currentPlaylistId: {
       handler: function(val) {
-        this.setCurrentGroupId(val)
+        this.setcurrentPlaylistId(val)
       },
       immediate: true,
     }
   },
   computed: {
-    currentGroupId() {
-      return this.$route.params.group_id
+    currentPlaylistId() {
+      return this.$route.params.id
     },
-    ...mapGetters("Groups", {
-      currentGroup: 'currentGroup',
+    ...mapGetters("Playlists", {
+      currentPlaylist: 'currentPlaylist',
     }),
   },
   methods: {
-    ...mapMutations("Groups", {
-      setCurrentGroupId: 'setCurrent',
+    ...mapMutations("Playlists", {
+      setcurrentPlaylistId: 'setCurrent',
     }),
   },
 };

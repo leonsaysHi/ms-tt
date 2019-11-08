@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-form-group
-      label="Add video"
+      label="Add new tune"
       label-for="input-add"
       :state="state"
     >
@@ -10,6 +10,7 @@
         v-model="urlInput"
         :state="state"
         :disabled="!player"
+        placeholder="Youtube video's URL"
         trim
       ></b-form-input>
     </b-form-group>
@@ -63,9 +64,6 @@ export default {
   computed: {
     ...mapGetters("User", {
       userId: 'uid',
-    }),
-    ...mapState("Groups", {
-      groupId: 'currentId',
     }),
     ...mapState("Library", {
       library: state => state.rows,

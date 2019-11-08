@@ -19,7 +19,7 @@ export default {
   data() {
     return {
       isWorking: true,
-      currentGroupsListener: null,
+      currentPlaylistsListener: null,
       currentUserListener: null,
     }
   },
@@ -28,15 +28,15 @@ export default {
       if (user) {
         await this.setUser(user)
         const
-          updateGroupsStore = this.setGroups,
+          updatePlaylistsStore = this.setPlaylists,
           updateUserStore = this.setUser
-        this.currentGroupsListener = window.db.collection("groups").where("users", "array-contains", this.userId)
+        this.currentPlaylistsListener = window.db.collection("playlists").where("users", "array-contains", this.userId)
           .onSnapshot(function(querySnapshot) {
-            const groups = []
+            const playlists = []
             querySnapshot.forEach(function(doc) {
-              groups.push({ group_id: doc.id, ...doc.data()})
+              playlists.push({ id: doc.id, ...doc.data()})
             });
-            updateGroupsStore(groups)
+            updatePlaylistsStore(playlists)
           });
         this.currentUserListener = window.db.collection("users").doc(this.userId)
           .onSnapshot(function(doc) {
@@ -45,8 +45,8 @@ export default {
         this.$router.push({ name:'Home' })
       }
       else {
-        if (this.currentGroupsListener) {
-          this.$data['currentGroupsListener']()
+        if (this.currentPlaylistsListener) {
+          this.$data['currentPlaylistsListener']()
           this.$data['currentUserListener']()
         }
       }
@@ -61,8 +61,8 @@ export default {
     ...mapMutations("User", {
       setUser: 'setUser',
     }),
-    ...mapMutations("Groups", {
-      setGroups: 'setGroups',
+    ...mapMutations("Playlists", {
+      setPlaylists: 'setPlaylists',
     }),
   }
 };

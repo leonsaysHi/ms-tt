@@ -1,15 +1,15 @@
 <template>
   <div>
     <ul class="list-group mt-2">
-      <li class="list-group-item p-3" v-for="row in rows" :key="row.group_id">
-        <GroupItem :item="row" />
+      <li class="list-group-item p-3" v-for="row in rows" :key="row.id">
+        <Item :item="row" />
       </li>
       <li class="list-group-item p-3 d-flex">
         <div class="flex-grow-1 pr-2 border-right">
-          <JoinGroup />
+          <JoinForm />
         </div>
         <div class="flex-grow-1 pl-2">
-          <CreateGroup />
+          <CreateForm />
         </div>
       </li>
     </ul>
@@ -17,15 +17,15 @@
 </template>
 
 <script>
-import GroupItem from './groups/GroupItem.vue';
-import CreateGroup from './groups/CreateGroup.vue';
-import JoinGroup from './groups/JoinGroup.vue';
+import Item from './playlists/Item.vue';
+import CreateForm from './playlists/CreateForm.vue';
+import JoinForm from './playlists/JoinForm.vue';
 import { mapState } from 'vuex';
 export default {
   components: {
-    GroupItem,
-    CreateGroup,
-    JoinGroup,
+    Item,
+    CreateForm,
+    JoinForm,
   },
   data() {
     return {
@@ -34,7 +34,7 @@ export default {
   async mounted () {
   },
   computed: {
-    ...mapState("Groups", [
+    ...mapState("Playlists", [
       'rows',
     ]),
   },

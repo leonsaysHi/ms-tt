@@ -8,7 +8,7 @@
     <div class="ml-auto">
       <b-spinner v-if="item.isWorking || isWorking" small variant="primary" class="ml-2"></b-spinner>
       <b-dropdown id="dropdown-share" text="Share" size="sm" class="ml-2">
-        <b-dropdown-item v-for="group in groups" :key="group.group_id" @click="shareTune(group)">{{ group.title }}</b-dropdown-item>
+        <b-dropdown-item v-for="playlist in playlists" :key="playlist.id" @click="shareTune(playlist)">{{ playlist.title }}</b-dropdown-item>
       </b-dropdown>
       <b-dropdown id="dropdown-actions" text="..." size="sm" class="ml-2">
         <b-dropdown-item :disabled="!isOwner" @click="$emit('delete')"><span class="text-danger">Delete</span></b-dropdown-item>
@@ -38,10 +38,10 @@ export default {
     ...mapState("User", {
       user: 'user',
     }),
-    ...mapGetters("Groups", {
-      groups: 'otherGroups',
+    ...mapGetters("Playlists", {
+      playlists: 'otherPlaylists',
     }),
-    ...mapState("Profiles", {
+    ...mapState("Players", {
       usersList: 'rows',
     }),
     ...mapState("Library", {
@@ -61,25 +61,25 @@ export default {
     },
   },
   methods: {
-    ...mapActions("Profiles", {
+    ...mapActions("Players", {
       getUser: 'getRow',
     }),
-    shareTune(group) {
+    shareTune(playlist) {
       this.isWorking = true
       const tune = {
         ...this.item,
         uid: this.userId,
         date: new Date().getTime(),
       }
-      this.addTune( group.group_id, tune)
+      this.addTune( playlist.id, tune)
         .then(() => {
-          this.$bvToast.toast('"' + tune.title + '" saved to '+ group.title, {
+          this.$bvToast.toast('"' + tune.title + '" saved to '+ playlist.title, {
             title: 'Shared',
             variant: 'success',
             solid: true,
             appendToast: true,
           })
-        })        
+        })
         .finally(() => {
           this.isWorking = false
         })
