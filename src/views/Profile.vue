@@ -13,7 +13,7 @@
           ></b-form-input>
         </b-form-group>
         <b-form-group
-          label="User name"
+          label="Username"
           label-for="input-displayName"
         >
           <b-form-input

@@ -6,7 +6,6 @@
         <li class="list-group-item p-3" v-for="row in rows" :key="row.video_uid">
           <Item
             @queue="queueRow(row)"
-            @share="shareRow(row)"
             @delete="deleteRow(row)"
             :item="row"
           />
@@ -18,7 +17,9 @@
       v-model="showAddModal"
       id="modal-add-row"
       hide-footer
-    ><AddVideo /></b-modal>
+    >
+      <AddVideo @add="handleAddRow" />
+    </b-modal>
   </div>
 </template>
 
@@ -26,6 +27,8 @@
 import LibraryHeader from './library/LibraryHeader';
 import Item from './library/LibraryItem';
 import AddVideo from './library/AddVideo';
+import AddTune from '@/mixins/addTune';
+import RemoveTune from '@/mixins/removeTune';
 import { mapState, mapMutations, mapGetters } from 'vuex';
 export default {
   name: "Library",
@@ -34,6 +37,7 @@ export default {
     Item,
     AddVideo,
   },
+  mixins: [AddTune, RemoveTune],
   data() {
     return  {
       showAddModal: false,
@@ -43,7 +47,7 @@ export default {
   created() {
     const
       updateStore = this.setLibrary
-    this.currentTunesListener = window.db.collection("groups").doc(this.currentGroup.group_id).collection("tunes")
+    this.currentTunesListener = window.db.collection("groups").doc(this.currentGroup.group_id).collection("tunes").orderBy("date")
       .onSnapshot(function(querySnapshot) {
         var tunes = [];
         querySnapshot.forEach(function(doc) {
@@ -77,16 +81,32 @@ export default {
       queueRow: 'pushToQueue',
     }),
     toggleAddModal() {
-      this.showAddModal = true
+      this.showAddModal = !this.showAddModal
     },
-    deleteRow(row) {
-      window.db.collection("groups").doc(this.currentGroup.group_id).collection("tunes").doc(row.video_id).delete()
-      .then(function() {
-        window.console.log("Document successfully deleted!");
-      }).catch(function(error) {
-        window.console.error("Error removing document: ", error);
-      })
-
+    handleAddRow(tune) {
+      this.addTune( this.groupId, tune)
+        .then(() => {
+          this.$bvToast.toast('"' + tune.title + '" saved to group', {
+            title: 'Shared',
+            variant: 'success',
+            solid: true,
+            appendToast: true,
+          })
+        })
+        .finally(() => {
+          this.toggleAddModal()
+        })
+    },
+    deleteRow(tune) {
+      this.removeTune( this.currentGroup.group_id, tune)
+        .then(() => {
+          this.$bvToast.toast('"' + tune.title + '" removed from group', {
+            title: 'Removed',
+            variant: 'success',
+            solid: true,
+            appendToast: true,
+          })
+        })
     }
   },
 };

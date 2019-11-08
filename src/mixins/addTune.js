@@ -1,0 +1,26 @@
+export default {
+  methods: {
+    addTune(group_id, tune) {
+      const
+        { video_id } = tune,
+        tunesRef = window.db.collection("groups").doc(group_id).collection('tunes'),
+        docRef = tunesRef.doc(video_id)
+      return new Promise((res, rej) => {
+          docRef.get().then((doc) => {
+          if (doc.exists) {
+            this.$bvToast.toast('"' + tune.title + '" already exist in this group', {
+              title: 'Error',
+              variant: 'warning',
+              solid: true,
+              appendToast: true,
+            })
+            rej(doc)
+          } else {
+            docRef.set(tune)
+            res(tune)
+          }
+        })
+      })
+    },
+  }
+};

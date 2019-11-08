@@ -8,8 +8,8 @@ export default {
   mutations: {
     setUser (state, payload) {
       if (_.get(payload, 'uid')) {
-        const { uid } = payload
-        state.user = { uid }
+        const { uid, email, displayName } = payload
+        state.user = { uid, email, displayName }
       }
       else {
         state.user = { ...state.user, ...payload }
@@ -65,13 +65,5 @@ export default {
           commit('setError', error.message)
         })
     },
-    // getInfos ({ commit }) {
-    //   var user = firebase.auth().currentUser;
-    //   if (user != null) {
-    //     user.providerData.forEach(function (profile) {
-    //       commit('setUser', profile)
-    //     });
-    //   }
-    // },
   },
 };

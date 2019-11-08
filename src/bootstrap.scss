@@ -11,6 +11,7 @@
  @import "~bootstrap/scss/_mixins.scss";
  @import "~bootstrap/scss/_root";
  @import "~bootstrap/scss/_reboot";
+ @import "~bootstrap/scss/_transitions";
  @import "~bootstrap/scss/_type";
  @import "~bootstrap/scss/_images";
  @import "~bootstrap/scss/_code";
@@ -27,6 +28,9 @@
  @import "~bootstrap/scss/_dropdown";
  @import "~bootstrap/scss/_nav";
  @import "~bootstrap/scss/_navbar";
+ @import "~bootstrap/scss/_toasts";
  @import "~bootstrap/scss/grid";
  @import "~bootstrap/scss/_spinners";
  @import "~bootstrap/scss/utilities";
+
+ @import "~bootstrap-vue/dist/bootstrap-vue.css";

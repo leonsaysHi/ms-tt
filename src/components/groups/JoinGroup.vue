@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="d-flex">
-      <b-form-input v-model="groupId" class="flex-grow-1 mr-2" />
+      <b-form-input v-model="groupId" class="flex-grow-1 mr-2" placeholder="Copy group code here" />
       <b-button variant="primary" :disabled="isWorking" @click="handleJoinGroup">Join</b-button>
     </div>
     <div v-if="isError"><small class="text-danger">{{ isError.message }}</small></div>

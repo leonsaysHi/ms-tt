@@ -6,9 +6,11 @@
       <br><strong :class="{'text-muted': item.isWorking, 'text-danger': item.isErrored}">{{ item.title }} </strong>
     </div>
     <div class="ml-auto">
-      <b-spinner v-if="item.isWorking" small variant="primary" class="ml-2"></b-spinner>
-      <b-dropdown id="dropdown-1" text="..." size="sm" class="ml-2">
-        <b-dropdown-item @click="$emit('share')">Share</b-dropdown-item>
+      <b-spinner v-if="item.isWorking || isWorking" small variant="primary" class="ml-2"></b-spinner>
+      <b-dropdown id="dropdown-share" text="Share" size="sm" class="ml-2">
+        <b-dropdown-item v-for="group in groups" :key="group.group_id" @click="shareTune(group)">{{ group.title }}</b-dropdown-item>
+      </b-dropdown>
+      <b-dropdown id="dropdown-actions" text="..." size="sm" class="ml-2">
         <b-dropdown-item :disabled="!isOwner" @click="$emit('delete')"><span class="text-danger">Delete</span></b-dropdown-item>
       </b-dropdown>
     </div>
@@ -16,12 +18,15 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapGetters, mapActions } from 'vuex';
+import AddTune from '@/mixins/addTune';
 export default {
   name: "LibraryItem",
+  mixins: [AddTune],
   props: ['item'],
   data() {
     return  {
+      isWorking: false
     }
   },
   created() {
@@ -32,6 +37,9 @@ export default {
   computed: {
     ...mapState("User", {
       user: 'user',
+    }),
+    ...mapGetters("Groups", {
+      groups: 'otherGroups',
     }),
     ...mapState("Profiles", {
       usersList: 'rows',
@@ -56,6 +64,26 @@ export default {
     ...mapActions("Profiles", {
       getUser: 'getRow',
     }),
+    shareTune(group) {
+      this.isWorking = true
+      const tune = {
+        ...this.item,
+        uid: this.userId,
+        date: new Date().getTime(),
+      }
+      this.addTune( group.group_id, tune)
+        .then(() => {
+          this.$bvToast.toast('"' + tune.title + '" saved to '+ group.title, {
+            title: 'Shared',
+            variant: 'success',
+            solid: true,
+            appendToast: true,
+          })
+        })        
+        .finally(() => {
+          this.isWorking = false
+        })
+    },
   },
 };
 </script>

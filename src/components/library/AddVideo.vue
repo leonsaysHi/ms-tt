@@ -110,23 +110,13 @@ export default {
     add () {
       const
         { video_id, title } = this.videoDatas,
-        payload = {
+        tune = {
           video_id,
           title,
           uid: this.userId,
           date: new Date().getTime(),
         }
-      this.pushToLibrary({ ...payload, isWorking: true })
-      var tunesRef = window.db.collection("groups").doc(this.groupId).collection('tunes')
-      tunesRef.doc(video_id).set(payload)
-        .then(() => {
-          this.saveSuccess(video_id)
-        })
-        .catch(() => {
-          this.saveError(video_id)
-        })
-      this.urlInput = ''
-      this.player.stopVideo()
+      this.$emit('add', tune)
     },
   },
 };
