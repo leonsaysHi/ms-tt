@@ -1,15 +1,18 @@
 <template>
   <div>
     <div class="btn-group btn-group-sm mb-2" role="group">
-      <button class="btn btn-secondary" :disabled="!canPlay" @click="play">Play</button>
-      <button class="btn btn-secondary" :disabled="!canSkip" @click="skip">Next</button>
+      <button class="btn btn-primary" v-if="canPlay" @click="togglePlay">Play</button>
+      <button class="btn btn-secondary" v-else @click="togglePlay">Stop</button>
+      <button class="btn btn-secondary" :disabled="!canSkip" @click="skip(1)">Skip</button>
+      <button class="btn btn-primary" v-if="repeatMode" @click="toggleRepeat">Repeat {{ repeatMode }}</button>
+      <button class="btn btn-secondary" v-else @click="toggleRepeat">Repeat off</button>
     </div>
-    <div v-if="hasCurrentItem" class="border-top my-1 pt-2"><span class="text-muted">Playing:</span> {{ control.currentItem.title }}</div>
+    <div v-if="currentTune" class="border-top my-1 pt-2"><span class="text-muted">Playing:</span> {{ currentTune.title }}</div>
   </div>
 </template>
 
 <script>
-import { mapMutations, mapState } from 'vuex';
+import { mapState, mapGetters, mapActions } from 'vuex';
 export default {
   name: "Controls",
   data() {
@@ -18,29 +21,27 @@ export default {
   computed: {
     ...mapState("Library", [
       'control',
-      'queue',
     ]),
-    hasCurrentItem() {
-      return !_.isNull(this.control.currentItem)
-    },
+    ...mapGetters("Library", {
+      queue: 'queue',
+      currentTune: 'current',
+    }),
     canPlay() {
-      return this.queue.length > 0 && !this.hasCurrentItem
+      return this.queue.length > 0 && !this.control.isPlaying
     },
     canSkip() {
       return this.queue.length > 1
     },
+    repeatMode() {
+      return this.control.repeatAll ? 'all' : this.control.repeatOne ? 'one' : null
+    }
   },
   methods: {
-    ...mapMutations("Library", [
-      'removeFromQueue',
-      'playQueue',
-    ]),
-    play() {
-      this.playQueue()
-    },
-    skip() {
-      this.removeFromQueue(this.queue[0])
-    },
+    ...mapActions("Library", {
+      togglePlay: 'togglePlay',
+      skip: 'skip',
+      toggleRepeat: 'toggleRepeat',
+    }),
   },
 };
 </script>

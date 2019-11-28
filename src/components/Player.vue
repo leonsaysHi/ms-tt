@@ -7,34 +7,20 @@
         :player-vars="playerVars"
       ></youtube>
     </div>
-    <div class="flex-grow-1 position-relative"><div class="overflow-auto">
-      <div
-        v-for="(item) in queuedVideos"
-        :key="item.video_id"
-        class="py-2 border-bottom"
-      >
-        <PlayerItem
-          :item="item"
-        />
-      </div>
-    </div></div>
   </div>
 </template>
 
 <script>
 import Controls from "./Controls";
-import PlayerItem from "./PlayerItem";
-import { mapState, mapMutations } from 'vuex';
+import { mapState, mapGetters, mapActions } from 'vuex';
 export default {
-  name: "Queue",
   components: {
     Controls,
-    PlayerItem,
   },
   data() {
     return {
       playerVars: {
-        controls: 0,
+        controls: 1,
         modestbranding: 1,
       },
     }
@@ -42,45 +28,60 @@ export default {
   async mounted () {
     this.player.addEventListener('onStateChange', this.playerChange);
     this.player.addEventListener('onError', this.playerError);
-    // const totalTime = await this.player.getDuration();
-    if (this.currentVideo) {
-      this.player.loadVideoById(this.currentVideo.video_id)
-    }
+    // this.playerPlay()
   },
   computed: {
     ...mapState("Library", [
-      'queue',
       'control',
     ]),
-    queuedVideos() {
-      return this.queue.map(item => ({
-        ...item
-      })).slice(1)
-    },
-    currentVideo() {
-      return this.control.currentItem
+    ...mapGetters("Library", {
+      currentTune: 'current',
+    }),
+    isPlaying() {
+      return this.control.isPlaying || false
     },
     player () {
       return this.$refs.youtube.player
     }
   },
   watch: {
-    currentVideo: function(newVal) {
-      if (newVal) {
-        this.player.loadVideoById(newVal.video_id)
+    currentTune: function(newVal, oldVal) {
+      if (newVal && (!oldVal || newVal.video_id !== oldVal.video_id) ) {
+        this.playerPlay()
       }
-    }
+    },
+    isPlaying: function(newVal, oldVal) {
+      if (newVal === oldVal) { return }
+      else if (newVal) {
+        this.playerPlay()
+      } else {
+        this.playerStop()
+      }
+    },
+
   },
   methods: {
-    ...mapMutations("Library", [
-      'removeFromQueue',
-    ]),
+    ...mapActions("Library", {
+      tuneEnded: 'handleEnded',
+      stop: 'stop',
+    }),
     ended() {
-      this.removeFromQueue(this.control.currentItem)
+      window.console.log('ended')
+      if (this.control.repeatOne) {
+        this.player.seekTo(0)
+      }
+      else {
+        this.tuneEnded()
+      }
+    },
+    playerPlay () {
+      if (this.currentTune && this.isPlaying) { this.player.loadVideoById(this.currentTune.video_id) }
+    },
+    playerStop () {
+      this.player.pauseVideo()
     },
     playerError (error) {
       window.console.log('Error', error)
-      this.removeFromQueue(this.control.currentItem)
     },
     playerChange (state) {
       /**
