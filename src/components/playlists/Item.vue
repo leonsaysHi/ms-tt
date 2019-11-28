@@ -3,7 +3,7 @@
     <strong>{{ item.title }}</strong>
     <div>
       <code class="p-1 border round">{{ item.id }}</code>
-      <b-button class="ml-2" :disabled="isWorking" variant="danger" @click="quitPlaylist">Quit</b-button>
+      <b-button class="ml-2" :disabled="isWorking" variant="danger" @click="quitPlaylist">Remove</b-button>
     </div>
   </div>
 </template>

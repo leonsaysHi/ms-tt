@@ -3,13 +3,13 @@
     <LibraryHeader @add="toggleAddModal" />
     <div class="flex-grow-1 mt-2 position-relative"><div class="overflow-auto">
       <ul class="list-group">
-        <li class="list-group-item p-3" v-for="row in rows" :key="row.video_uid">
-          <Item
-            @queue="queueRow(row)"
-            @delete="deleteRow(row)"
-            :item="row"
+        <template v-for="tune in queue">
+          <Item :key="tune.video_uid"
+            @play="handlePlayTune(tune)"
+            @delete="deleteRow(tune)"
+            :item="tune"
           />
-        </li>
+        </template>
       </ul>
     </div></div>
     <b-modal
@@ -29,7 +29,7 @@ import Item from './library/LibraryItem';
 import AddVideo from './library/AddVideo';
 import AddTune from '@/mixins/addTune';
 import RemoveTune from '@/mixins/removeTune';
-import { mapState, mapMutations, mapGetters } from 'vuex';
+import { mapMutations, mapGetters, mapActions } from 'vuex';
 export default {
   name: "Library",
   components: {
@@ -64,24 +64,23 @@ export default {
     ...mapGetters("Playlists", {
       currentPlaylist: 'currentPlaylist',
     }),
-    ...mapState("Library", {
-      queue: state => state.queue,
-      library: state => state.rows,
+    ...mapGetters("Library", {
+      queue: 'queue',
     }),
-    rows() {
-      const rows = this.library.slice()
-      rows.reverse()
-      return rows
-    }
   },
   methods: {
     ...mapMutations("Library", {
       resetLibrary: 'reset',
       setLibrary: 'setRows',
-      queueRow: 'pushToQueue',
+    }),
+    ...mapActions("Library", {
+      playTune: 'skipTo',
     }),
     toggleAddModal() {
       this.showAddModal = !this.showAddModal
+    },
+    handlePlayTune(tune) {
+      this.playTune(tune)
     },
     handleAddRow(tune) {
       this.addTune( this.currentPlaylist.id, tune)

@@ -3,26 +3,21 @@ export default {
   strict: process.env.NODE_ENV !== 'production',
   state: {
     rows: [],
-    queue: [],
     control: {
-      currentItem: null,
+      currentItemIdx: null,
+      isPlaying: false,
+      repeatAll: false,
+      repeatOne: false,
     },
   },
   mutations: {
     reset(state) {
       state.rows = []
-      state.queue = []
-      state.control.currentItem = null
+      state.control.currentItemIdx = null
     },
     setRows(state, list) {
       state.rows = list || []
-    },
-    pushToRows(state, item) {
-      state.rows.unshift(item)
-    },
-    popFromRows(state, video_id) {
-      const rowIdx = state.rows.findIndex(v => v.video_id === video_id)
-      state.rows.splice((rowIdx-1), 1)
+      if (!state.control.currentItemIdx || !state.rows[state.control.currentItemIdx]) state.control.currentItemIdx = 0
     },
     rowErrored(state, video_id) {
       let
@@ -40,23 +35,70 @@ export default {
       row.isSaved = true
       state.rows.splice(rowIdx, 1, row)
     },
-    pushToQueue(state, item) {
-      state.queue.push(item);
-      if (state.queue.length === 1) {
-        state.control.currentItem = item;
-      }
+    play(state) {
+      state.control = { ...state.control, isPlaying: true }
     },
-    removeFromQueue(state, item) {
-      state.queue = state.queue.filter(i => i.video_id !== item.video_id);
-      const { currentItem } = state.control
-      if (item.video_id === currentItem.video_id) {
-        state.control.currentItem = state.queue[0];
-      }
+    skip(state, idx) {
+      state.control = { ...state.control, currentItemIdx: idx }
     },
-    playQueue(state) {
-      state.control.currentItem = state.queue[0];
+    stop(state) {
+      state.control = { ...state.control, isPlaying: false }
+    },
+    setRepeatAll(state) {
+      state.control = { ...state.control, repeatAll: true, repeatOne: false }
+    },
+    setRepeatOne(state) {
+      state.control = { ...state.control, repeatAll: false, repeatOne: true }
+    },
+    setRepeatOff(state) {
+      state.control = { ...state.control, repeatAll: false, repeatOne: false }
+    }
+  },
+  getters: {
+    queue(state) {
+      return state.rows
+    },
+    current(state) {
+      return _.isNumber(state.control.currentItemIdx) && _.get(state.rows, state.control.currentItemIdx) ? state.rows[state.control.currentItemIdx] : null
+    },
+    isPlaying(state) {
+      return state.control.isPlaying
     },
   },
   actions: {
+    handleEnded({ state, getters, dispatch, commit }) {
+      const currentItemIdx = state.control.currentItemIdx
+      const idxMax = getters.queue.length - 1
+      window.console.log('handleEnded')
+      if (state.control.repeatAll || currentItemIdx < idxMax) {
+        dispatch('skip')
+      }
+      else {
+        commit('stop')
+      }
+    },
+    togglePlay({ commit, state }) {
+      if (state.control.isPlaying) {
+        commit('stop')
+        return
+      }
+      commit('play', state.control.currentItemIdx)
+    },
+    skip({ commit, getters, state }, moveIdx = 1) {
+      let idx = state.control.currentItemIdx + moveIdx
+      const idxMax = getters.queue.length - 1
+      if (idx < 0) { idx = idxMax }
+      if (idx > idxMax) { idx = 0 }
+      commit('skip', idx)
+    },
+    skipTo({ commit, getters }, row) {
+      let idx = getters.queue.findIndex( item => item.video_id == row.video_id )
+      commit('skip', idx)
+    },
+    toggleRepeat({ state, commit }) {
+      if (state.control.repeatAll) { commit('setRepeatOne') }
+      else if (state.control.repeatOne) { commit('setRepeatOff') }
+      else { commit('setRepeatAll') }
+    }
   },
 };
