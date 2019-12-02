@@ -9,7 +9,7 @@ export default {
           docRef.get().then((doc) => {
           if (doc.exists) {
             this.$bvToast.toast('"' + tune.title + '" already exist in this playlist', {
-              title: 'Error',
+              title: 'Can\'t add video',
               variant: 'warning',
               solid: true,
               appendToast: true,

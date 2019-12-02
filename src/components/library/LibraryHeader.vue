@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex justify-content-between">
     <h2>{{ currentPlaylist.title }}</h2>
-    <b-button @click="$emit('add')">New tune</b-button>    
+    <b-button variant="primary" @click="$emit('add')"><plus-thick-icon /></b-button>    
   </div>
 </template>
 

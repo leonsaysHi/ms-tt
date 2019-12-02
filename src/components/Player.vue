@@ -23,7 +23,7 @@ export default {
   data() {
     return {
       playerVars: {
-        controls: 1,
+        controls: 0,
         modestbranding: 1,
       },
     }
