@@ -4,14 +4,24 @@
       <b-button :variant="isCurrent && isPlaying ? '' : 'primary'" :disabled="isCurrent && isPlaying" @click="$emit('play')" size="sm" class="mr-2">Play</b-button>
       <div class="title">
         <strong :class="{'text-muted': item.isWorking, 'text-danger': item.isErrored}">{{ item.title }} </strong>
-        <br><span>{{ owner.displayName }}</span> <small class="text-secondary">{{ item.date | moment("from") }}</small>        
+        <br><span>{{ owner.displayName }}</span> <small class="text-secondary">{{ item.date | moment("from") }}</small>
       </div>
-      <div class="ml-auto">
+      <div class="ml-auto d-flex align-items-center">
+        <div>
+          <template v-if="hasVotes">
+            <small class="text-danger">{{ item.votes.length }}</small>
+            <heart-icon class="text-danger" />
+          </template>
+          <heart-icon v-else class="text-muted" />
+        </div>
         <b-spinner v-if="item.isWorking || isWorking" small variant="primary" class="ml-2"></b-spinner>
-        <b-dropdown id="dropdown-share" text="Share" size="sm" class="ml-2">
+        <b-dropdown v-if="playlists.length > 1" id="dropdown-share" text="Share" size="sm" class="ml-2">
           <b-dropdown-item v-for="playlist in playlists" :key="playlist.id" @click="shareTune(playlist)">{{ playlist.title }}</b-dropdown-item>
         </b-dropdown>
-        <b-dropdown id="dropdown-actions" text="..." size="sm" class="ml-2">
+        <b-dropdown id="dropdown-actions" variant="light" size="sm" class="ml-2" no-caret>
+          <template v-slot:button-content>
+            <dots-vertical-icon />
+          </template>
           <b-dropdown-item :disabled="!isOwner" @click="$emit('delete')"><span class="text-danger">Delete</span></b-dropdown-item>
         </b-dropdown>
       </div>
@@ -62,6 +72,9 @@ export default {
     isOwner() {
       return this.item.uid === this.userId
     },
+    hasVotes() {
+      return _.get(this.item, 'votes') && _.isArray(this.item.votes) && this.item.votes.length > 0
+    }
   },
   methods: {
     ...mapActions("Players", {
