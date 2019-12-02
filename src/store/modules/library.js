@@ -3,6 +3,7 @@ export default {
   strict: process.env.NODE_ENV !== 'production',
   state: {
     rows: [],
+    votes: [],
     control: {
       currentItemIdx: null,
       isPlaying: false,
@@ -18,6 +19,9 @@ export default {
     setRows(state, list) {
       state.rows = list || []
       if (!state.control.currentItemIdx || !state.rows[state.control.currentItemIdx]) state.control.currentItemIdx = 0
+    },
+    setVotes(state, votes) {
+      state.votes = votes || []
     },
     rowErrored(state, video_id) {
       let

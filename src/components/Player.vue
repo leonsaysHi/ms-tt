@@ -1,6 +1,7 @@
 <template>
   <div class="flex-grow-1 d-flex flex-column align-items-stretch">
     <Controls />
+    <NowPlaying />
     <div class="player">
       <youtube
         ref="youtube"
@@ -12,15 +13,17 @@
 
 <script>
 import Controls from "./Controls";
+import NowPlaying from "./NowPlaying";
 import { mapState, mapGetters, mapActions } from 'vuex';
 export default {
   components: {
     Controls,
+    NowPlaying,
   },
   data() {
     return {
       playerVars: {
-        controls: 1,
+        controls: 0,
         modestbranding: 1,
       },
     }
