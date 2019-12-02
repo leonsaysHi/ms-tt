@@ -3,7 +3,7 @@ export default {
   strict: process.env.NODE_ENV !== 'production',
   state: {
     rows: [],
-    votes: [],
+    isWorking: true,
     control: {
       currentRow: null,
       isPlaying: false,
@@ -14,13 +14,12 @@ export default {
   mutations: {
     reset(state) {
       state.rows = []
+      state.isWorking = true
       state.control.currentRow = null
     },
     setRows(state, list) {
       state.rows = list
-    },
-    setVotes(state, votes) {
-      state.votes = votes || []
+      state.isWorking = false
     },
     rowErrored(state, video_id) {
       let

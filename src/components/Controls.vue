@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="btn-group btn-group-sm mb-2" role="group">
+    <div class="btn-group mb-2" role="group">
       <b-button :variant="canPlay ? 'primary' : ''" @click="togglePlay">
         <play-icon v-if="canPlay" />
         <stop-icon v-else />
