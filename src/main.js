@@ -15,6 +15,7 @@ window.firebase.initializeApp({
   apiKey: "AIzaSyC8_oLEhspnHIrNMZLDb0ALlB_wluc_NhE",
   authDomain: "ms-turn-table.firebaseapp.com",
   projectId: "ms-turn-table",
+  storageBucket: 'ms-turn-table.web.app/',
 });
 window.db = window.firebase.firestore();
 
