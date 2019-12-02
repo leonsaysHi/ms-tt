@@ -1,11 +1,16 @@
 <template>
   <div>
     <div class="btn-group btn-group-sm mb-2" role="group">
-      <button class="btn btn-primary" v-if="canPlay" @click="togglePlay">Play</button>
-      <button class="btn btn-secondary" v-else @click="togglePlay">Stop</button>
-      <button class="btn btn-secondary" :disabled="!canSkip" @click="skip(1)">Skip</button>
-      <button class="btn btn-primary" v-if="repeatMode" @click="toggleRepeat">Repeat {{ repeatMode }}</button>
-      <button class="btn btn-secondary" v-else @click="toggleRepeat">Repeat off</button>
+      <b-button :variant="canPlay ? 'primary' : ''" @click="togglePlay">
+        <play-icon v-if="canPlay" />
+        <stop-icon v-else />
+      </b-button>
+      <b-button :disabled="!canSkip" @click="skip(1)"><skip-next-icon /></b-button>
+      <b-button :variant="repeatMode ? 'primary' : ''" @click="toggleRepeat">
+        <repeat-icon v-if="repeatMode === 'all'" />
+        <repeat-once-icon v-else-if="repeatMode === 'one'" />
+        <repeat-off-icon v-else />
+      </b-button>
     </div>
   </div>
 </template>

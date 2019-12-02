@@ -1,8 +1,8 @@
 <template>
   <div class="flex-grow-1 d-flex align-items-stretch justify-content-center">
     <template v-if="currentPlaylist">
-      <div class="d-flex flex-column align-items-stretch flex-grow-1 p-2 border-right"><Library :key="currentPlaylistId" /></div>
-      <div class="d-flex flex-column align-items-stretch flex-grow-1 p-2"><Player :key="currentPlaylistId" /></div>
+      <div class="d-flex flex-column align-items-stretch w-50 p-2 border-right"><Library :key="currentPlaylistId" /></div>
+      <div class="d-flex flex-column align-items-stretch w-50 p-2"><Player :key="currentPlaylistId" /></div>
     </template>
     <template v-else-if="playlists">
       <b-card-group class="flex-grow-1 p-4" deck>

@@ -1,7 +1,7 @@
 <template>
   <li class="list-group-item p-3" :class="{ 'bg-light': isCurrent }">
     <div class="d-flex align-items-start">
-      <b-button :variant="isCurrent && isPlaying ? '' : 'primary'" :disabled="isCurrent && isPlaying" @click="$emit('play')" size="sm" class="mr-2">Play</b-button>
+      <b-button :disabled="isCurrentAndPlaying" :variant="!isCurrentAndPlaying  ? 'primary' : ''" @click="$emit('play')" size="sm" class="mr-2"><play-icon /></b-button>
       <div class="title">
         <strong :class="{'text-muted': item.isWorking, 'text-danger': item.isErrored}">{{ item.title }} </strong>
         <br><span>{{ owner.displayName }}</span> <small class="text-secondary">{{ item.date | moment("from") }}</small>
@@ -71,6 +71,9 @@ export default {
     },
     isOwner() {
       return this.item.uid === this.userId
+    },
+    isCurrentAndPlaying() {
+      return this.isCurrent && this.isPlaying
     },
     hasVotes() {
       return _.get(this.item, 'votes') && _.isArray(this.item.votes) && this.item.votes.length > 0
