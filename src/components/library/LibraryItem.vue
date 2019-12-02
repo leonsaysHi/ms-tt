@@ -4,7 +4,7 @@
       <b-button :disabled="isCurrentAndPlaying" :variant="!isCurrentAndPlaying  ? 'primary' : ''" @click="$emit('play')" size="sm" class="mr-2"><play-icon /></b-button>
       <div class="title">
         <strong :class="{'text-muted': item.isWorking, 'text-danger': item.isErrored}">{{ item.title }} </strong>
-        <br><span>{{ owner.displayName }}</span> <small class="text-secondary">{{ item.date | moment("from") }}</small>
+        <br><DisplayName :uid="item.uid" /> <small class="text-secondary">{{ item.date | moment("from") }}</small>
       </div>
       <div class="ml-auto d-flex align-items-center">
         <div>
@@ -31,10 +31,12 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
 import ShareTune from './ShareTune';
+import DisplayName from '@/components/DisplayName';
 export default {
   name: "LibraryItem",
   components: {
-    ShareTune
+    ShareTune,
+    DisplayName,
   },
   props: ['item'],
   data() {
@@ -57,9 +59,6 @@ export default {
     ...mapState("Players", {
       usersList: 'rows',
     }),
-    owner() {
-      return this.isOwner ? this.user : _.get(this.usersList, this.item.uid, { displayName: '...' })
-    },
     userId() {
       return this.user.uid
     },

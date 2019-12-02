@@ -28,6 +28,7 @@ Vue.config.productionTip = false;
 
 /* Icons */
 // https://dev.materialdesignicons.com/icons
+import AccountGroup from 'vue-material-design-icons/AccountGroup.vue';
 import Close from 'vue-material-design-icons/Close.vue';
 import DotsVertical from 'vue-material-design-icons/DotsVertical.vue';
 import Heart from 'vue-material-design-icons/Heart.vue';
@@ -41,6 +42,7 @@ import Share from 'vue-material-design-icons/Share.vue';
 import SkipNext from 'vue-material-design-icons/SkipNext.vue';
 import Stop from 'vue-material-design-icons/Stop.vue';
 
+Vue.component('account-group-icon', AccountGroup);
 Vue.component('close-icon', Close);
 Vue.component('dots-vertical-icon', DotsVertical);
 Vue.component('heart-icon', Heart);

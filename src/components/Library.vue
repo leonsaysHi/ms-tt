@@ -52,6 +52,7 @@ export default {
         querySnapshot.forEach(function(doc) {
           tunes.push(doc.data())
         })
+        tunes.reverse()
         updateStoreRows(tunes)
       })
     const updateStoreVotes = this.setLibraryVotes
@@ -74,6 +75,7 @@ export default {
     }),
     ...mapGetters("Library", {
       queue: 'queue',
+      isPlaying: 'isPlaying',
     }),
   },
   methods: {
@@ -83,6 +85,7 @@ export default {
       setLibraryVotes: 'setVotes',
     }),
     ...mapActions("Library", {
+      togglePlay: 'togglePlay',
       playTune: 'skipTo',
     }),
     toggleAddModal() {
@@ -90,6 +93,7 @@ export default {
     },
     handlePlayTune(tune) {
       this.playTune(tune)
+      if (!this.isPlaying) { this.togglePlay() }
     },
     handleAddRow(tune) {
       this.addTune( this.currentPlaylist.id, tune)

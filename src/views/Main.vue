@@ -5,13 +5,16 @@
       <div class="d-flex flex-column align-items-stretch w-50 p-2"><Player :key="currentPlaylistId" /></div>
     </template>
     <template v-else-if="playlists">
-      <b-card-group class="flex-grow-1 p-4" deck>
-        <b-card v-for="playlist in playlists" :title="playlist.title" :key="playlist.id">
-          <b-card-text>
-            <b-button @click="selectPlaylist(playlist.id)" class="stretched-link">Open</b-button>
-          </b-card-text>
-        </b-card>
-      </b-card-group>
+      <div class="p-3 flex-grow-1">
+          <b-card v-for="playlist in playlists" :title="playlist.title" :key="playlist.id" bg-variant="light" class="mt-3">
+            <b-card-text>
+              {{ playlist.users.length }} players.
+            </b-card-text>
+            <template v-slot:footer>
+              <b-button @click="selectPlaylist(playlist.id)" variant="primary" class="stretched-link">Open</b-button>
+            </template>
+          </b-card>
+      </div>
     </template>
   </div>
 </template>
