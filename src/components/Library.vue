@@ -45,15 +45,23 @@ export default {
     }
   },
   created() {
-    const
-      updateStore = this.setLibrary
+    const updateStoreRows = this.setLibraryRows
     this.currentTunesListener = window.db.collection("playlists").doc(this.currentPlaylist.id).collection("tunes").orderBy("date")
       .onSnapshot(function(querySnapshot) {
         var tunes = [];
         querySnapshot.forEach(function(doc) {
           tunes.push(doc.data())
         })
-        updateStore(tunes)
+        updateStoreRows(tunes)
+      })
+    const updateStoreVotes = this.setLibraryVotes
+    this.currentTunesListener = window.db.collection("playlists").doc(this.currentPlaylist.id).collection("votes")
+      .onSnapshot(function(querySnapshot) {
+        var votes = {};
+        querySnapshot.forEach(function(doc) {
+          votes[doc.id] = doc.data()
+        })
+        updateStoreVotes(votes)
       })
   },
   beforeDestroy() {
@@ -71,7 +79,8 @@ export default {
   methods: {
     ...mapMutations("Library", {
       resetLibrary: 'reset',
-      setLibrary: 'setRows',
+      setLibraryRows: 'setRows',
+      setLibraryVotes: 'setVotes',
     }),
     ...mapActions("Library", {
       playTune: 'skipTo',

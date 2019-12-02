@@ -26,6 +26,18 @@ Vue.use(VueYoutube);
 Vue.use(Vuex);
 Vue.config.productionTip = false;
 
+/* Icons */
+// https://dev.materialdesignicons.com/icons
+import Close from 'vue-material-design-icons/Close.vue';
+import Heart from 'vue-material-design-icons/Heart.vue';
+import HeartOutline from 'vue-material-design-icons/HeartOutline.vue';
+import Share from 'vue-material-design-icons/Share.vue';
+
+Vue.component('close-icon', Close);
+Vue.component('heart-icon', Heart);
+Vue.component('heart-outline-icon', HeartOutline);
+Vue.component('share-icon', Share);
+
 /* Directives */
 Vue.directive('time', require('./directives/formatTime.js').default);
 

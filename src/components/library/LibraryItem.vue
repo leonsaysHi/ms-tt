@@ -3,8 +3,8 @@
     <div class="d-flex align-items-start">
       <b-button :variant="isCurrent && isPlaying ? '' : 'primary'" :disabled="isCurrent && isPlaying" @click="$emit('play')" size="sm" class="mr-2">Play</b-button>
       <div class="title">
-        <span>{{ owner.displayName }}</span> <small class="text-secondary">{{ item.date | moment("from") }}</small>
-        <br><strong :class="{'text-muted': item.isWorking, 'text-danger': item.isErrored}">{{ item.title }} </strong>
+        <strong :class="{'text-muted': item.isWorking, 'text-danger': item.isErrored}">{{ item.title }} </strong>
+        <br><span>{{ owner.displayName }}</span> <small class="text-secondary">{{ item.date | moment("from") }}</small>        
       </div>
       <div class="ml-auto">
         <b-spinner v-if="item.isWorking || isWorking" small variant="primary" class="ml-2"></b-spinner>

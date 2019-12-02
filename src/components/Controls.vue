@@ -7,14 +7,12 @@
       <button class="btn btn-primary" v-if="repeatMode" @click="toggleRepeat">Repeat {{ repeatMode }}</button>
       <button class="btn btn-secondary" v-else @click="toggleRepeat">Repeat off</button>
     </div>
-    <div v-if="currentTune" class="border-top my-1 pt-2"><span class="text-muted">Playing:</span> {{ currentTune.title }}</div>
   </div>
 </template>
 
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
 export default {
-  name: "Controls",
   data() {
     return { }
   },
@@ -34,7 +32,7 @@ export default {
     },
     repeatMode() {
       return this.control.repeatAll ? 'all' : this.control.repeatOne ? 'one' : null
-    }
+    },
   },
   methods: {
     ...mapActions("Library", {
