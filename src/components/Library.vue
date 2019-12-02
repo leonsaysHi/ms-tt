@@ -2,7 +2,8 @@
   <div class="flex-grow-1 d-flex flex-column align-items-stretch">
     <LibraryHeader @add="toggleAddModal" />
     <div class="flex-grow-1 mt-2 position-relative"><div class="overflow-auto">
-      <ul class="list-group">
+      <b-spinner small variant="primary" v-if="queueIsWorking"></b-spinner>
+      <ul class="list-group" v-else>
         <template v-for="tune in queue">
           <Item :key="tune.video_uid"
             @play="handlePlayTune(tune)"
@@ -29,7 +30,7 @@ import Item from './library/LibraryItem';
 import AddVideo from './library/AddVideo';
 import AddTune from '@/mixins/addTune';
 import RemoveTune from '@/mixins/removeTune';
-import { mapMutations, mapGetters, mapActions } from 'vuex';
+import { mapState, mapGetters, mapActions } from 'vuex';
 export default {
   name: "Library",
   components: {
@@ -44,34 +45,12 @@ export default {
       currentTunesListener: null,
     }
   },
-  created() {
-    const updateStoreRows = this.setLibraryRows
-    this.currentTunesListener = window.db.collection("playlists").doc(this.currentPlaylist.id).collection("tunes").orderBy("date")
-      .onSnapshot(function(querySnapshot) {
-        var tunes = [];
-        querySnapshot.forEach(function(doc) {
-          tunes.push(doc.data())
-        })
-        tunes.reverse()
-        updateStoreRows(tunes)
-      })
-    const updateStoreVotes = this.setLibraryVotes
-    this.currentTunesListener = window.db.collection("playlists").doc(this.currentPlaylist.id).collection("votes")
-      .onSnapshot(function(querySnapshot) {
-        var votes = {};
-        querySnapshot.forEach(function(doc) {
-          votes[doc.id] = doc.data()
-        })
-        updateStoreVotes(votes)
-      })
-  },
-  beforeDestroy() {
-    this.$data['currentTunesListener']()
-    this.resetLibrary()
-  },
   computed: {
     ...mapGetters("Playlists", {
       currentPlaylist: 'currentPlaylist',
+    }),
+    ...mapState("Library", {
+      queueIsWorking: 'isWorking',
     }),
     ...mapGetters("Library", {
       queue: 'queue',
@@ -79,11 +58,6 @@ export default {
     }),
   },
   methods: {
-    ...mapMutations("Library", {
-      resetLibrary: 'reset',
-      setLibraryRows: 'setRows',
-      setLibraryVotes: 'setVotes',
-    }),
     ...mapActions("Library", {
       togglePlay: 'togglePlay',
       playTune: 'skipTo',

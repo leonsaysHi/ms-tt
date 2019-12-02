@@ -29,13 +29,21 @@ export default {
     Library,
     Player,
   },
+  data() {
+    return {
+      currentTunesListener: null
+    }
+  },
   beforeDestroy() {
     this.setcurrentPlaylistId()
   },
   watch: {
     currentPlaylistId: {
       handler: function(val) {
-        this.setcurrentPlaylistId(val)
+        if(val) {
+          this.setcurrentPlaylistId(val)
+          this.connectToDb(val)
+        }
       },
       immediate: true,
     }
@@ -55,6 +63,28 @@ export default {
     ...mapMutations("Playlists", {
       setcurrentPlaylistId: 'setCurrent',
     }),
+    ...mapMutations("Library", {
+      resetLibrary: 'reset',
+      setLibraryRows: 'setRows',
+    }),
+    connectToDb(id) {
+      console.log('connectToDB')
+      if (this.currentTunesListener) {
+        console.log('clear listener')
+        this.currentTunesListener()
+        this.resetLibrary()
+      }
+      const updateStoreRows = this.setLibraryRows
+      this.currentTunesListener = window.db.collection("playlists").doc(id).collection("tunes").orderBy("date")
+        .onSnapshot(function(querySnapshot) {
+          var tunes = [];
+          querySnapshot.forEach(function(doc) {
+            tunes.push(doc.data())
+          })
+          tunes.reverse()
+          updateStoreRows(tunes)
+        })
+    },
     selectPlaylist(id) {
       this.$router.push({ name:'PlaylistsHome', params: { id }})
     },
