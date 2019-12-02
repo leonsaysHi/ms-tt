@@ -5,7 +5,7 @@ export default {
     rows: [],
     votes: [],
     control: {
-      currentItemIdx: null,
+      currentRow: null,
       isPlaying: false,
       repeatAll: false,
       repeatOne: false,
@@ -14,11 +14,10 @@ export default {
   mutations: {
     reset(state) {
       state.rows = []
-      state.control.currentItemIdx = null
+      state.control.currentRow = null
     },
     setRows(state, list) {
-      state.rows = list || []
-      if (!state.control.currentItemIdx || !state.rows[state.control.currentItemIdx]) state.control.currentItemIdx = 0
+      state.rows = list
     },
     setVotes(state, votes) {
       state.votes = votes || []
@@ -43,7 +42,7 @@ export default {
       state.control = { ...state.control, isPlaying: true }
     },
     skip(state, idx) {
-      state.control = { ...state.control, currentItemIdx: idx }
+      state.control = { ...state.control, currentRow: _.assign({}, state.rows[idx]) }
     },
     stop(state) {
       state.control = { ...state.control, isPlaying: false }
@@ -63,17 +62,19 @@ export default {
       return state.rows
     },
     current(state) {
-      return _.isNumber(state.control.currentItemIdx) && _.get(state.rows, state.control.currentItemIdx) ? state.rows[state.control.currentItemIdx] : null
+      return state.control.currentRow
     },
     isPlaying(state) {
       return state.control.isPlaying
     },
   },
   actions: {
-    handleEnded({ state, getters, dispatch, commit }) {
-      const currentItemIdx = state.control.currentItemIdx
-      const idxMax = getters.queue.length - 1
-      window.console.log('handleEnded')
+    handleEnded({ state, dispatch, commit }) {
+      const
+        currentRow = state.control.currentRow,
+        currentItemIdx = state.rows.findIndex(v => v.video_id === currentRow.video_id)
+      const idxMax = state.rows.length - 1
+      console.log('handleEnded')
       if (state.control.repeatAll || currentItemIdx < idxMax) {
         dispatch('skip')
       }
@@ -86,17 +87,20 @@ export default {
         commit('stop')
         return
       }
-      commit('play', state.control.currentItemIdx)
+      commit('play')
     },
-    skip({ commit, getters, state }, moveIdx = 1) {
-      let idx = state.control.currentItemIdx + moveIdx
-      const idxMax = getters.queue.length - 1
+    skip({ commit, state }, moveIdx = 1) {
+      const
+        currentRow = state.control.currentRow,
+        currentItemIdx = state.rows.findIndex(v => v.video_id === currentRow.video_id)
+      let idx = currentItemIdx + moveIdx
+      const idxMax = state.rows.length - 1
       if (idx < 0) { idx = idxMax }
       if (idx > idxMax) { idx = 0 }
       commit('skip', idx)
     },
-    skipTo({ commit, getters }, row) {
-      let idx = getters.queue.findIndex( item => item.video_id == row.video_id )
+    skipTo({ commit, state }, row) {
+      let idx = state.rows.findIndex( item => item.video_id == row.video_id )
       commit('skip', idx)
     },
     toggleRepeat({ state, commit }) {
