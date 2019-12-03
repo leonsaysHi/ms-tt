@@ -7,8 +7,8 @@
         <div class="playlist-body-inner"><Library /></div>
       </div>
     </div>
-    <template v-else>
-      <b-card v-for="playlist in playlists" :title="playlist.title" :key="playlist.id" bg-variant="light" class="mt-3">
+    <div class="d-flex align-items-start flex-wrap" v-else>
+      <b-card v-for="playlist in playlists" :title="playlist.title" :key="playlist.id" bg-variant="light" class="m-3">
         <b-card-text>
           {{ playlist.users.length }} players.
         </b-card-text>
@@ -16,7 +16,7 @@
           <b-button @click="selectPlaylist(playlist.id)" variant="primary" class="stretched-link">Open</b-button>
         </template>
       </b-card>
-    </template>
+    </div>
   </div>
 </template>
 
