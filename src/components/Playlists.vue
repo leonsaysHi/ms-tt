@@ -4,13 +4,11 @@
       <li class="list-group-item p-3" v-for="row in rows" :key="row.id">
         <Item :item="row" />
       </li>
-      <li class="list-group-item p-3 d-flex">
-        <div class="flex-grow-1 pr-2 border-right">
-          <JoinForm />
-        </div>
-        <div class="flex-grow-1 pl-2">
-          <CreateForm />
-        </div>
+      <li class="list-group-item p-3">
+        <JoinForm />
+      </li>
+      <li class="list-group-item p-3">
+        <CreateForm />
       </li>
     </ul>
   </div>

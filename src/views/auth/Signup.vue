@@ -1,5 +1,5 @@
 <template>
-  <div class="w-50 mx-auto my-3 p-2">
+  <div class="flex-grow-1 mx-3 mx-md-5 my-3">
     <b-form-group
       label="E-mail"
       label-for="input-email"

@@ -1,10 +1,8 @@
 <template>
-  <div class="d-flex justify-content-between">
+  <div class="d-md-flex align-items-center justify-content-between">
     <strong>{{ item.title }}</strong>
-    <div>
-      <code class="p-1 border round">{{ item.id }}</code>
-      <b-button class="ml-2" :disabled="isWorking" variant="danger" @click="quitPlaylist">Remove</b-button>
-    </div>
+    <div class="ml-auto my-2 my-md-0"><code class="p-1 border rounded">{{ item.id }}</code></div>
+    <b-button class="ml-md-2" :disabled="isWorking" variant="danger" @click="quitPlaylist">Remove</b-button>
   </div>
 </template>
 

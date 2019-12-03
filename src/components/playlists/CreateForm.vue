@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div class="d-flex">
+    <div class="d-md-flex">
       <b-form-input v-model="values.title" class="flex-grow-1 mr-2" placeholder="New playlist's name" />
-      <b-button variant="primary" class="text-nowrap" :disabled="isWorking" @click="handleCreatePlaylist">Create new playlist</b-button>
+      <b-button variant="primary" class="my-2 my-md-0 text-nowrap" :disabled="isWorking" @click="handleCreatePlaylist">Create new playlist</b-button>
     </div>
     <div v-if="isError"><small class="text-danger">{{ isError.message }}</small></div>
   </div>
