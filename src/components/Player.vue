@@ -1,5 +1,5 @@
 <template>
-  <div class="flex-grow-1 d-flex flex-column align-items-stretch">
+  <div>
     <Controls />
     <NowPlaying />
     <div class="player">
@@ -108,13 +108,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .position-relative > .overflow-auto {
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-  }
   .player {
     position:relative;
     width: 100%;

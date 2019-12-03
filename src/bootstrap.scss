@@ -6,32 +6,34 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 
- @import "~bootstrap/scss/_functions.scss";
- @import "~bootstrap/scss/_variables";
- @import "~bootstrap/scss/_mixins.scss";
- @import "~bootstrap/scss/_root";
- @import "~bootstrap/scss/_reboot";
- @import "~bootstrap/scss/_transitions";
- @import "~bootstrap/scss/_type";
- @import "~bootstrap/scss/_images";
- @import "~bootstrap/scss/_code";
- @import "~bootstrap/scss/_grid";
- @import "~bootstrap/scss/_tables";
- @import "~bootstrap/scss/_forms";
- @import "~bootstrap/scss/_custom-forms";
- @import "~bootstrap/scss/_badge";
- @import "~bootstrap/scss/_buttons";
- @import "~bootstrap/scss/_button-group";
- @import "~bootstrap/scss/_list-group";
- @import "~bootstrap/scss/_modal";
- @import "~bootstrap/scss/_close";
- @import "~bootstrap/scss/_card";
- @import "~bootstrap/scss/_dropdown";
- @import "~bootstrap/scss/_nav";
- @import "~bootstrap/scss/_navbar";
- @import "~bootstrap/scss/_toasts";
+ @import "~bootstrap/scss/functions.scss";
+ @import "~bootstrap/scss/variables";
+ @import "~bootstrap/scss/mixins.scss";
+ @import "~bootstrap/scss/root";
+ @import "~bootstrap/scss/reboot";
+ @import "~bootstrap/scss/transitions";
+ @import "~bootstrap/scss/type";
+ @import "~bootstrap/scss/images";
+ @import "~bootstrap/scss/code";
  @import "~bootstrap/scss/grid";
- @import "~bootstrap/scss/_spinners";
+ @import "~bootstrap/scss/tables";
+ @import "~bootstrap/scss/forms";
+ @import "~bootstrap/scss/custom-forms";
+ @import "~bootstrap/scss/badge";
+ @import "~bootstrap/scss/buttons";
+ @import "~bootstrap/scss/button-group";
+ @import "~bootstrap/scss/list-group";
+ @import "~bootstrap/scss/modal";
+ @import "~bootstrap/scss/close";
+ @import "~bootstrap/scss/card";
+ @import "~bootstrap/scss/dropdown";
+ @import "~bootstrap/scss/nav";
+ @import "~bootstrap/scss/navbar";
+ @import "~bootstrap/scss/toasts";
+ @import "~bootstrap/scss/grid";
+ @import "~bootstrap/scss/spinners";
  @import "~bootstrap/scss/utilities";
 
  @import "~bootstrap-vue/dist/bootstrap-vue.css";
+
+ @import "./scss/index";

@@ -5,7 +5,7 @@ export default {
     rows: [],
     isWorking: true,
     control: {
-      currentRow: null,
+      currentVideoId: null,
       isPlaying: false,
       repeatAll: false,
       repeatOne: false,
@@ -15,7 +15,7 @@ export default {
     reset(state) {
       state.rows = []
       state.isWorking = true
-      state.control.currentRow = null
+      state.control.currentVideoId = null
     },
     setRows(state, list) {
       state.rows = list
@@ -41,7 +41,7 @@ export default {
       state.control = { ...state.control, isPlaying: true }
     },
     skip(state, idx) {
-      state.control = { ...state.control, currentRow: _.assign({}, state.rows[idx]) }
+      state.control = { ...state.control, currentVideoId: state.rows[idx].video_id }
     },
     stop(state) {
       state.control = { ...state.control, isPlaying: false }
@@ -61,17 +61,19 @@ export default {
       return state.rows
     },
     current(state) {
-      return state.control.currentRow
+      return state.control.currentVideoId ? state.rows.find(v => v.video_id === state.control.currentVideoId) : null
+    },
+    currentIdx(state) {
+      return state.control.currentVideoId ? state.rows.findIndex(v => v.video_id === state.control.currentVideoId) : null
     },
     isPlaying(state) {
       return state.control.isPlaying
     },
   },
   actions: {
-    handleEnded({ state, dispatch, commit }) {
+    handleEnded({ state, getters, dispatch, commit }) {
       const
-        currentRow = state.control.currentRow,
-        currentItemIdx = state.rows.findIndex(v => v.video_id === currentRow.video_id)
+        currentItemIdx = getters.currentIdx
       const idxMax = state.rows.length - 1
       console.log('handleEnded')
       if (state.control.repeatAll || currentItemIdx < idxMax) {
@@ -88,10 +90,9 @@ export default {
       }
       commit('play')
     },
-    skip({ commit, state }, moveIdx = 1) {
+    skip({ commit, getters, state }, moveIdx = 1) {
       const
-        currentRow = state.control.currentRow,
-        currentItemIdx = state.rows.findIndex(v => v.video_id === currentRow.video_id)
+        currentItemIdx = getters.currentIdx
       let idx = currentItemIdx + moveIdx
       const idxMax = state.rows.length - 1
       if (idx < 0) { idx = idxMax }

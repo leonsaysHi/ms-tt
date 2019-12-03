@@ -9,10 +9,11 @@
             <br><span>{{ owner.displayName }}</span> <small class="text-secondary">{{ currentTune.date | moment("from") }}</small>
           </div>
           <div class="ml-auto">
-            <b-link @click="toggleVote" :class="{ 'text-muted': !hasOwnerUpvoted, 'text-danger': hasOwnerUpvoted }">
+            <b-link v-if="!voteIsWorking" @click="toggleVote" :class="{ 'text-muted': !hasOwnerUpvoted, 'text-danger': hasOwnerUpvoted }">
               <heart-icon v-if="hasOwnerUpvoted" />
               <heart-outline-icon v-else />
             </b-link>
+            <b-spinner v-else small variant="muted"></b-spinner>
           </div>
         </div>
       </div>
@@ -26,7 +27,9 @@ import VoteTune from '@/mixins/voteTune';
 export default {
   mixins: [VoteTune],
   data() {
-    return { }
+    return {
+      voteIsWorking: false
+    }
   },
   computed: {
     ...mapState("User", {
@@ -53,7 +56,11 @@ export default {
   },
   methods: {
     toggleVote() {
+      this.voteIsWorking = true
       this.voteTune(this.playlistId, this.currentTune.video_id, this.user.uid)
+        .then(()=>{
+          this.voteIsWorking = false
+        })
     }
   }
 };

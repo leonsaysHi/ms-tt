@@ -1,52 +1,63 @@
 <template>
   <div>
-    <b-form-group
-      label="Add new tune"
-      label-for="input-add"
-      :state="state"
+    <b-modal
+      size="lg"
+      v-model="modalShow"
+      hide-footer
+      @shown="onShow"
+      @hide="onHide"
     >
-      <b-form-input
-        id="input-add"
-        v-model="urlInput"
+      <b-form-group
+        label="Add new tune"
+        label-for="input-add"
         :state="state"
-        :disabled="!player"
-        placeholder="Youtube video's URL"
-        trim
-      ></b-form-input>
-    </b-form-group>
-    <div class="d-flex align-items-start details">
-      <b-spinner  small variant="primary" v-if="videoId && !hasVideoDatas"></b-spinner>
-      <div class="player mr-2 border-right bg-dark" :class="{'align-self-stretch': hasVideoDatas}">
-        <div>
-          <youtube
-            ref="youtube"
-            :player-vars="playerVars"
-          />
+      >
+        <b-form-input
+          id="input-add"
+          v-model="urlInput"
+          :state="state"
+          :disabled="!player"
+          placeholder="Youtube video's URL"
+          trim
+        ></b-form-input>
+      </b-form-group>
+      <div class="d-flex align-items-start details">
+        <b-spinner  small variant="primary" v-if="videoId && !hasVideoDatas"></b-spinner>
+        <div class="player mr-2 border-right bg-dark" :class="{'align-self-stretch': hasVideoDatas}">
+          <div>
+            <youtube
+              ref="youtube"
+              :player-vars="playerVars"
+            />
+          </div>
+        </div>
+        <div v-if="hasVideoDatas" class="ml-2 flex-grow-1">
+          <b-form-group
+            label="Title"
+            label-for="input-title"
+          >
+            <b-form-input id="input-title" v-model="videoDatas.title" :disabled="videoAlreadyAdded || !hasVideoDatas" :state="videoDatas.title.length > 0" trim></b-form-input>
+          </b-form-group>
+          <b-button v-if="videoAlreadyAdded" :disabled="true">Already added by <display-name :uid="videoAlreadyAdded.uid" /></b-button>
+          <b-button v-else variant="primary" @click="add">Add</b-button>
         </div>
       </div>
-      <div v-if="hasVideoDatas" class="ml-2 flex-grow-1">
-        <b-form-group
-          label="Title"
-          label-for="input-title"
-        >
-          <b-form-input id="input-title" v-model="videoDatas.title" :disabled="videoFromLibrary || !hasVideoDatas" :state="videoDatas.title.length > 0" trim></b-form-input>
-        </b-form-group>
-        <b-button v-if="videoFromLibrary" :disabled="true">Already added by ...</b-button>
-        <b-button v-else variant="primary" @click="add">Add</b-button>
-      </div>
-    </div>
+    </b-modal>
+    <slot v-bind:toggle="toggle"><b-button variant="primary" @click="toggle"><plus-thick-icon /></b-button></slot>
   </div>
 </template>
 
 <script>
 import { mapState, mapGetters, mapMutations } from 'vuex';
+import AddTune from '@/mixins/addTune';
 export default {
-  name: "AddVideo",
+  mixins: [AddTune],
   data() {
     return  {
+      modalShow: false,
       urlInput: '',
       videoDatas: null,
-      videoFromLibrary: null,
+      videoAlreadyAdded: null,
       state: null,
       player: null,
       playerVars: {
@@ -56,14 +67,12 @@ export default {
       },
     }
   },
-  mounted () {
-    this.player = this.$refs.youtube.player
-    this.player.addEventListener('onStateChange', this.playerChange);
-    this.player.addEventListener('onError', this.playerError);
-  },
   computed: {
     ...mapGetters("User", {
       userId: 'uid',
+    }),
+    ...mapGetters("Playlists", {
+      currentPlaylist: 'currentPlaylist',
     }),
     ...mapState("Library", {
       library: state => state.rows,
@@ -82,9 +91,9 @@ export default {
   watch: {
     videoId: function(value) {
       if (value) {
-        this.videoFromLibrary = this.library.find(row => row.video_id === value) || null
+        this.videoAlreadyAdded = this.library.find(row => row.video_id === value) || null
         this.state = true
-        this.videoDatas = this.videoFromLibrary
+        this.videoDatas = this.videoAlreadyAdded
         this.player.loadVideoById(value)
       }
       else {
@@ -93,6 +102,22 @@ export default {
     }
   },
   methods: {
+    toggle() {
+      this.modalShow = true
+    },
+    onShow() {
+      this.player = this.$refs.youtube.player
+      this.player.addEventListener('onStateChange', this.playerChange)
+      this.player.addEventListener('onError', this.playerError)
+    },
+    onHide() {
+      this.player.removeEventListener('onStateChange')
+      this.player.removeEventListener('onError')
+      this.player = null
+      this.urlInput = ''
+      this.videoDatas = null
+      this.videoAlreadyAdded = null
+    },
     ...mapMutations("Library", {
       pushToLibrary: 'pushToRows',
       saveSuccess: 'rowSaved',
@@ -102,7 +127,7 @@ export default {
       this.state = false
     },
     playerChange (state) {
-      if (!this.state) { return }
+      if (!this.state || this.videoAlreadyAdded) { return }
       this.videoDatas = state.target.getVideoData()
     },
     add () {
@@ -114,7 +139,18 @@ export default {
           uid: this.userId,
           date: new Date().getTime(),
         }
-      this.$emit('add', tune)
+      this.addTune( this.currentPlaylist.id, tune)
+        .then(() => {
+          this.$bvToast.toast('"' + tune.title + '" saved to playlist.', {
+            title: 'Shared',
+            variant: 'success',
+            solid: true,
+            appendToast: true,
+          })
+        })
+        .finally(() => {
+          this.modalShow = false
+        })
     },
   },
 };

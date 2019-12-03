@@ -1,28 +1,27 @@
 <template>
-  <li class="list-group-item p-3" :class="{ 'bg-light': isCurrent }">
-    <div class="d-flex align-items-start">
-      <b-button :disabled="isCurrentAndPlaying" :variant="!isCurrentAndPlaying  ? 'primary' : ''" @click="$emit('play')" size="sm" class="mr-2"><play-icon /></b-button>
-      <div class="title">
-        <strong :class="{'text-muted': item.isWorking, 'text-danger': item.isErrored}">{{ item.title }} </strong>
-        <br><DisplayName :uid="item.uid" /> <small class="text-secondary">{{ item.date | moment("from") }}</small>
+  <li class="list-group-item p-0 d-flex align-items-stretch" :class="{ 'bg-light': isCurrent }">
+    <b-button class="d-none d-lg-block align-self-center ml-2" @click="$emit('play')" :disabled="isCurrent" :variant="isCurrent ? 'light' : 'primary'">
+      <play-icon />
+    </b-button>
+    <div class="title p-2" @click="$emit('play')">
+      <strong :class="{'text-muted': item.isWorking, 'text-danger': item.isErrored}">{{ item.title }} </strong>
+      <div class="d-flex align-items-baseline">
+        <small>Added by <strong><display-name :uid="item.uid" /></strong></small>
+        <small class="mx-2 text-secondary">{{ item.date | moment("from") }}</small>
+        <heart-icon v-if="hasVotes" class="text-danger" :size="12" />
+        <heart-outline-icon v-else class="text-muted" :size="12" />
+        <small :class="{'text-danger': hasVotes}">{{ !item.votes ? 0 : item.votes.length }}</small>
       </div>
-      <div class="ml-auto d-flex align-items-center">
-        <div>
-          <template v-if="hasVotes">
-            <small class="text-danger">{{ item.votes.length }}</small>
-            <heart-icon class="text-danger" />
-          </template>
-          <heart-icon v-else class="text-muted" />
-        </div>
-        <b-spinner v-if="item.isWorking || isWorking" small variant="primary" class="ml-2"></b-spinner>
-        <b-dropdown id="dropdown-actions" variant="light" size="sm" class="ml-2" no-caret>
-          <template v-slot:button-content>
-            <dots-vertical-icon />
-          </template>
-          <b-dropdown-item :disabled="otherPlaylists.length === 0 " @click="tuneToShare = item">Send to playlist...</b-dropdown-item>
-          <b-dropdown-item :disabled="!isOwner" @click="$emit('delete')"><span :class="{'text-danger': isOwner}">Delete</span></b-dropdown-item>
-        </b-dropdown>
-      </div>
+    </div>
+    <div class="py-2 pr-2 ml-auto d-flex flex-column flex-lg-row align-items-center">
+      <b-spinner v-if="item.isWorking || isWorking" small variant="primary" class="ml-2"></b-spinner>
+      <b-dropdown id="dropdown-actions" variant="light" size="sm" class="ml-lg-2" no-caret>
+        <template v-slot:button-content>
+          <dots-vertical-icon />
+        </template>
+        <b-dropdown-item :disabled="otherPlaylists.length === 0 " @click="tuneToShare = item">Send to playlist...</b-dropdown-item>
+        <b-dropdown-item :disabled="!isOwner" @click="$emit('delete')"><span :class="{'text-danger': isOwner}">Delete</span></b-dropdown-item>
+      </b-dropdown>
     </div>
     <ShareTune v-model="tuneToShare" @input="tuneToShare = null" />
   </li>
@@ -31,12 +30,10 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
 import ShareTune from './ShareTune';
-import DisplayName from '@/components/DisplayName';
 export default {
   name: "LibraryItem",
   components: {
     ShareTune,
-    DisplayName,
   },
   props: ['item'],
   data() {

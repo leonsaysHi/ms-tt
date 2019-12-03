@@ -9,7 +9,7 @@
       <b-list-group>
         <b-list-group-item v-for="item in players" :key="item.uid" :variant="item.uid === user.uid ? 'warning' : ''">
           <div class="d-flex align-items-start">
-            <DisplayName :uid="item.uid" />
+            <display-name :uid="item.uid" />
             <div class="ml-auto">
               <strong>{{ item.videos }} videos</strong>
               <br><span class="ml-auto">{{ item.upvotes }} upvotes</span>
@@ -18,17 +18,13 @@
         </b-list-group-item>
       </b-list-group>
     </b-modal>
-    <slot v-bind:toggle="toggle"><b-link @click="toggle">Export</b-link></slot>
+    <slot v-bind:toggle="toggle"><b-button variant="light" @click="toggle"><account-group-icon /></b-button></slot>
   </div>
 </template>
 
 <script>
 import { mapState, mapGetters } from 'vuex';
-import DisplayName from '@/components/DisplayName';
 export default {
-  components: {
-    DisplayName
-  },
   data() {
     return  {
       modalShow: false,

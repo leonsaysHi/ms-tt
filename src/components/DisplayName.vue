@@ -7,7 +7,9 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 export default {
-  props: [ 'uid' ],
+  props: {
+    uid: { required: true },
+  },
   data() {
     return {
     }
