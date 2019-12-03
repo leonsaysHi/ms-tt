@@ -9,7 +9,7 @@
       <b-list-group>
         <b-list-group-item v-for="item in players" :key="item.uid" :variant="item.uid === user.uid ? 'warning' : ''">
           <div class="d-flex align-items-start">
-            <DisplayName :uid="item.uid" />
+            <display-name :uid="item.uid" />
             <div class="ml-auto">
               <strong>{{ item.videos }} videos</strong>
               <br><span class="ml-auto">{{ item.upvotes }} upvotes</span>
@@ -24,11 +24,7 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex';
-import DisplayName from '@/components/DisplayName';
 export default {
-  components: {
-    DisplayName
-  },
   data() {
     return  {
       modalShow: false,

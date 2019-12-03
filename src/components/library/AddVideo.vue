@@ -4,6 +4,8 @@
       size="lg"
       v-model="modalShow"
       hide-footer
+      @shown="onShow"
+      @hide="onHide"
     >
       <b-form-group
         label="Add new tune"
@@ -34,9 +36,9 @@
             label="Title"
             label-for="input-title"
           >
-            <b-form-input id="input-title" v-model="videoDatas.title" :disabled="videoFromLibrary || !hasVideoDatas" :state="videoDatas.title.length > 0" trim></b-form-input>
+            <b-form-input id="input-title" v-model="videoDatas.title" :disabled="videoAlreadyAdded || !hasVideoDatas" :state="videoDatas.title.length > 0" trim></b-form-input>
           </b-form-group>
-          <b-button v-if="videoFromLibrary" :disabled="true">Already added by ...</b-button>
+          <b-button v-if="videoAlreadyAdded" :disabled="true">Already added by <display-name :uid="videoAlreadyAdded.uid" /></b-button>
           <b-button v-else variant="primary" @click="add">Add</b-button>
         </div>
       </div>
@@ -55,7 +57,7 @@ export default {
       modalShow: false,
       urlInput: '',
       videoDatas: null,
-      videoFromLibrary: null,
+      videoAlreadyAdded: null,
       state: null,
       player: null,
       playerVars: {
@@ -65,14 +67,12 @@ export default {
       },
     }
   },
-  mounted () {
-    this.player = this.$refs.youtube.player
-    this.player.addEventListener('onStateChange', this.playerChange);
-    this.player.addEventListener('onError', this.playerError);
-  },
   computed: {
     ...mapGetters("User", {
       userId: 'uid',
+    }),
+    ...mapGetters("Playlists", {
+      currentPlaylist: 'currentPlaylist',
     }),
     ...mapState("Library", {
       library: state => state.rows,
@@ -91,9 +91,9 @@ export default {
   watch: {
     videoId: function(value) {
       if (value) {
-        this.videoFromLibrary = this.library.find(row => row.video_id === value) || null
+        this.videoAlreadyAdded = this.library.find(row => row.video_id === value) || null
         this.state = true
-        this.videoDatas = this.videoFromLibrary
+        this.videoDatas = this.videoAlreadyAdded
         this.player.loadVideoById(value)
       }
       else {
@@ -105,6 +105,19 @@ export default {
     toggle() {
       this.modalShow = true
     },
+    onShow() {
+      this.player = this.$refs.youtube.player
+      this.player.addEventListener('onStateChange', this.playerChange)
+      this.player.addEventListener('onError', this.playerError)
+    },
+    onHide() {
+      this.player.removeEventListener('onStateChange')
+      this.player.removeEventListener('onError')
+      this.player = null
+      this.urlInput = ''
+      this.videoDatas = null
+      this.videoAlreadyAdded = null
+    },
     ...mapMutations("Library", {
       pushToLibrary: 'pushToRows',
       saveSuccess: 'rowSaved',
@@ -114,7 +127,7 @@ export default {
       this.state = false
     },
     playerChange (state) {
-      if (!this.state) { return }
+      if (!this.state || this.videoAlreadyAdded) { return }
       this.videoDatas = state.target.getVideoData()
     },
     add () {
@@ -136,7 +149,7 @@ export default {
           })
         })
         .finally(() => {
-          this.toggleAddModal()
+          this.modalShow = false
         })
     },
   },

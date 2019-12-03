@@ -1,31 +1,34 @@
 <template>
-  <div class="flex-grow-1 d-flex align-items-stretch justify-content-center">
-    <template v-if="currentPlaylist">
-      <div class="d-flex flex-column align-items-stretch w-50 p-2 border-right"><Library :key="currentPlaylistId" /></div>
-      <div class="d-flex flex-column align-items-stretch w-50 p-2"><Player :key="currentPlaylistId" /></div>
-    </template>
-    <template v-else-if="playlists">
-      <div class="p-3 flex-grow-1">
-          <b-card v-for="playlist in playlists" :title="playlist.title" :key="playlist.id" bg-variant="light" class="mt-3">
-            <b-card-text>
-              {{ playlist.users.length }} players.
-            </b-card-text>
-            <template v-slot:footer>
-              <b-button @click="selectPlaylist(playlist.id)" variant="primary" class="stretched-link">Open</b-button>
-            </template>
-          </b-card>
+  <div class="flex-grow-1 d-flex align-items-stretch p-3">
+    <div class="playlist-wrapper" v-if="currentPlaylist" :key="currentPlaylist.id">
+      <div class="playlist-header pb-2"><PlaylistHeader /></div>
+      <div class="playlist-player"><Player /></div>
+      <div class="playlist-body">
+        <div class="playlist-body-inner"><Library /></div>
       </div>
+    </div>
+    <template v-else>
+      <b-card v-for="playlist in playlists" :title="playlist.title" :key="playlist.id" bg-variant="light" class="mt-3">
+        <b-card-text>
+          {{ playlist.users.length }} players.
+        </b-card-text>
+        <template v-slot:footer>
+          <b-button @click="selectPlaylist(playlist.id)" variant="primary" class="stretched-link">Open</b-button>
+        </template>
+      </b-card>
     </template>
   </div>
 </template>
 
 <script>
 import { mapState, mapGetters, mapMutations } from 'vuex';
+import PlaylistHeader from '@/components/library/PlaylistHeader';
 import Player from "@/components/Player";
 import Library from "@/components/Library";
 export default {
   name: "Main",
   components: {
+    PlaylistHeader,
     Library,
     Player,
   },

@@ -1,6 +1,6 @@
 <template>
-  <div class="d-flex justify-content-between">
-    <h2>{{ currentPlaylist.title }}</h2>
+  <div class="flex-grow-1 d-flex justify-content-between">
+    <h2 class="mb-0">{{ currentPlaylist.title }}</h2>
     <div class="d-flex align-items-start">
       <PlaylistUsers class="ml-2"></PlaylistUsers>
       <AddVideo class="ml-2"></AddVideo>

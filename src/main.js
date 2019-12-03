@@ -56,6 +56,9 @@ Vue.component('share-icon', Share);
 Vue.component('skip-next-icon', SkipNext);
 Vue.component('stop-icon', Stop);
 
+/* Components */
+Vue.component('display-name', require('./components/DisplayName.vue').default)
+
 /* Directives */
 Vue.directive('time', require('./directives/formatTime.js').default);
 
