@@ -1,6 +1,6 @@
 <template>
   <div class="flex-grow-1 d-flex flex-column align-items-stretch">
-    <LibraryHeader @add="toggleAddModal" />
+    <LibraryHeader />
     <div class="flex-grow-1 mt-2 position-relative"><div class="overflow-auto">
       <b-spinner small variant="primary" v-if="queueIsWorking"></b-spinner>
       <ul class="list-group" v-else>
@@ -13,22 +13,12 @@
         </template>
       </ul>
     </div></div>
-    <b-modal
-      size="lg"
-      v-model="showAddModal"
-      id="modal-add-row"
-      hide-footer
-    >
-      <AddVideo @add="handleAddRow" />
-    </b-modal>
   </div>
 </template>
 
 <script>
 import LibraryHeader from './library/LibraryHeader';
 import Item from './library/LibraryItem';
-import AddVideo from './library/AddVideo';
-import AddTune from '@/mixins/addTune';
 import RemoveTune from '@/mixins/removeTune';
 import { mapState, mapGetters, mapActions } from 'vuex';
 export default {
@@ -36,9 +26,8 @@ export default {
   components: {
     LibraryHeader,
     Item,
-    AddVideo,
   },
-  mixins: [AddTune, RemoveTune],
+  mixins: [ RemoveTune],
   data() {
     return  {
       showAddModal: false,
@@ -68,20 +57,6 @@ export default {
     handlePlayTune(tune) {
       this.playTune(tune)
       if (!this.isPlaying) { this.togglePlay() }
-    },
-    handleAddRow(tune) {
-      this.addTune( this.currentPlaylist.id, tune)
-        .then(() => {
-          this.$bvToast.toast('"' + tune.title + '" saved to playlist.', {
-            title: 'Shared',
-            variant: 'success',
-            solid: true,
-            appendToast: true,
-          })
-        })
-        .finally(() => {
-          this.toggleAddModal()
-        })
     },
     deleteRow(tune) {
       this.removeTune( this.currentPlaylist.id, tune)

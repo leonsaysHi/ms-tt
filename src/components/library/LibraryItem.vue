@@ -7,12 +7,10 @@
         <br><DisplayName :uid="item.uid" /> <small class="text-secondary">{{ item.date | moment("from") }}</small>
       </div>
       <div class="ml-auto d-flex align-items-center">
-        <div>
-          <template v-if="hasVotes">
-            <small class="text-danger">{{ item.votes.length }}</small>
-            <heart-icon class="text-danger" />
-          </template>
-          <heart-icon v-else class="text-muted" />
+        <div class="votes text-center text-muted">
+          <heart-icon v-if="hasVotes" class="text-danger" />
+          <heart-icon v-else />
+          <small :class="{'text-danger': hasVotes}">{{ !item.votes ? 0 : item.votes.length }}</small>       
         </div>
         <b-spinner v-if="item.isWorking || isWorking" small variant="primary" class="ml-2"></b-spinner>
         <b-dropdown id="dropdown-actions" variant="light" size="sm" class="ml-2" no-caret>
@@ -86,5 +84,12 @@ export default {
 <style lang="scss" scoped>
   .title {
     line-height: 1rem;
+  }
+  .votes {
+    > * {display:block; }
+    .material-design-icon {
+      line-height: 1rem;
+      margin-bottom: -.33rem
+    }
   }
 </style>

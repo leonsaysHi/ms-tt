@@ -18,7 +18,7 @@
         </b-list-group-item>
       </b-list-group>
     </b-modal>
-    <slot v-bind:toggle="toggle"><b-link @click="toggle">Export</b-link></slot>
+    <slot v-bind:toggle="toggle"><b-button variant="light" @click="toggle"><account-group-icon /></b-button></slot>
   </div>
 </template>
 

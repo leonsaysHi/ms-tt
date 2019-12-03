@@ -68,9 +68,7 @@ export default {
       setLibraryRows: 'setRows',
     }),
     connectToDb(id) {
-      console.log('connectToDB')
       if (this.currentTunesListener) {
-        console.log('clear listener')
         this.currentTunesListener()
         this.resetLibrary()
       }

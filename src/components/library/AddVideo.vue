@@ -1,49 +1,58 @@
 <template>
   <div>
-    <b-form-group
-      label="Add new tune"
-      label-for="input-add"
-      :state="state"
+    <b-modal
+      size="lg"
+      v-model="modalShow"
+      hide-footer
     >
-      <b-form-input
-        id="input-add"
-        v-model="urlInput"
+      <b-form-group
+        label="Add new tune"
+        label-for="input-add"
         :state="state"
-        :disabled="!player"
-        placeholder="Youtube video's URL"
-        trim
-      ></b-form-input>
-    </b-form-group>
-    <div class="d-flex align-items-start details">
-      <b-spinner  small variant="primary" v-if="videoId && !hasVideoDatas"></b-spinner>
-      <div class="player mr-2 border-right bg-dark" :class="{'align-self-stretch': hasVideoDatas}">
-        <div>
-          <youtube
-            ref="youtube"
-            :player-vars="playerVars"
-          />
+      >
+        <b-form-input
+          id="input-add"
+          v-model="urlInput"
+          :state="state"
+          :disabled="!player"
+          placeholder="Youtube video's URL"
+          trim
+        ></b-form-input>
+      </b-form-group>
+      <div class="d-flex align-items-start details">
+        <b-spinner  small variant="primary" v-if="videoId && !hasVideoDatas"></b-spinner>
+        <div class="player mr-2 border-right bg-dark" :class="{'align-self-stretch': hasVideoDatas}">
+          <div>
+            <youtube
+              ref="youtube"
+              :player-vars="playerVars"
+            />
+          </div>
+        </div>
+        <div v-if="hasVideoDatas" class="ml-2 flex-grow-1">
+          <b-form-group
+            label="Title"
+            label-for="input-title"
+          >
+            <b-form-input id="input-title" v-model="videoDatas.title" :disabled="videoFromLibrary || !hasVideoDatas" :state="videoDatas.title.length > 0" trim></b-form-input>
+          </b-form-group>
+          <b-button v-if="videoFromLibrary" :disabled="true">Already added by ...</b-button>
+          <b-button v-else variant="primary" @click="add">Add</b-button>
         </div>
       </div>
-      <div v-if="hasVideoDatas" class="ml-2 flex-grow-1">
-        <b-form-group
-          label="Title"
-          label-for="input-title"
-        >
-          <b-form-input id="input-title" v-model="videoDatas.title" :disabled="videoFromLibrary || !hasVideoDatas" :state="videoDatas.title.length > 0" trim></b-form-input>
-        </b-form-group>
-        <b-button v-if="videoFromLibrary" :disabled="true">Already added by ...</b-button>
-        <b-button v-else variant="primary" @click="add">Add</b-button>
-      </div>
-    </div>
+    </b-modal>
+    <slot v-bind:toggle="toggle"><b-button variant="primary" @click="toggle"><plus-thick-icon /></b-button></slot>
   </div>
 </template>
 
 <script>
 import { mapState, mapGetters, mapMutations } from 'vuex';
+import AddTune from '@/mixins/addTune';
 export default {
-  name: "AddVideo",
+  mixins: [AddTune],
   data() {
     return  {
+      modalShow: false,
       urlInput: '',
       videoDatas: null,
       videoFromLibrary: null,
@@ -93,6 +102,9 @@ export default {
     }
   },
   methods: {
+    toggle() {
+      this.modalShow = true
+    },
     ...mapMutations("Library", {
       pushToLibrary: 'pushToRows',
       saveSuccess: 'rowSaved',
@@ -114,7 +126,18 @@ export default {
           uid: this.userId,
           date: new Date().getTime(),
         }
-      this.$emit('add', tune)
+      this.addTune( this.currentPlaylist.id, tune)
+        .then(() => {
+          this.$bvToast.toast('"' + tune.title + '" saved to playlist.', {
+            title: 'Shared',
+            variant: 'success',
+            solid: true,
+            appendToast: true,
+          })
+        })
+        .finally(() => {
+          this.toggleAddModal()
+        })
     },
   },
 };

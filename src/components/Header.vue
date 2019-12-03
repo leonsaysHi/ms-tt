@@ -1,9 +1,9 @@
 <template>
-  <b-navbar toggleable="lg" type="light" variant="light">
+  <b-navbar toggleable="md" type="light" variant="light">
 
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
-    <b-collapse is-nav>
+    <b-collapse is-nav id="nav-collapse">
       <b-navbar-nav>
         <b-nav-item-dropdown text="Playlists" :disabled="!playlists || playlists.length === 0">
           <b-dropdown-item
