@@ -1,8 +1,8 @@
 <template>
   <div id="app" class="d-flex flex-column align-items-stretch">
-    <Header v-if="$route.meta.requiresAuth" />
+    <Header v-if="isLogged" />
     <div class="flex-grow-1 d-flex align-items-stretch">
-      <router-view></router-view>
+      <router-view :key="$route.fullPath"></router-view>
     </div>
   </div>
 </template>
@@ -42,7 +42,7 @@ export default {
           .onSnapshot(function(doc) {
             updateUserStore({ ...doc.data() });
           })
-        this.$router.push({ name:'Home' })
+        this.$router.push({ name:'home' })
       }
       else {
         if (this.currentPlaylistsListener) {
@@ -54,6 +54,7 @@ export default {
   },
   computed: {
     ...mapGetters("User", {
+      isLogged: 'isLogged',
       userId: 'uid',
     }),
   },

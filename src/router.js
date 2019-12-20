@@ -1,7 +1,8 @@
 import firebase from 'firebase'
 import Vue from 'vue'
 import Router from 'vue-router'
-import Main from '@/views/Main.vue'
+import Home from '@/views/Home.vue'
+import Playlist from '@/views/Playlist.vue'
 import SignUp from '@/views/auth/Signup.vue'
 import Login from '@/views/auth/Login.vue'
 import Profile from '@/views/Profile.vue'
@@ -10,6 +11,7 @@ import Profile from '@/views/Profile.vue'
 Vue.use(Router);
 
 const router = new Router({
+  // mode: 'history',
   routes: [
     {
       path: '*',
@@ -21,47 +23,46 @@ const router = new Router({
     },
     {
       path: '/login',
-      name: 'Login',
+      name: 'login',
       component: Login
     },
     {
       path: '/sign-up',
-      name: 'SignUp',
+      name: 'signUp',
       component: SignUp
     },
     {
       path: '/profile',
-      name: 'Profile',
+      name: 'profile',
       component: Profile,
       meta: {
         requiresAuth: true
       }
     },
     {
-      path: '/playlist',
-      name: 'Home',
-      component: Main,
+      path: '/playlist/:id',
+      name: 'playlist',
+      component: Playlist,
       meta: {
         requiresAuth: true
       }
     },
     {
-      path: '/playlist/:id',
-      name: 'PlaylistsHome',
-      component: Main,
+      path: '/playlist',
+      name: 'home',
+      component: Home,
       meta: {
         requiresAuth: true
       }
-    }
+    },
   ]
 });
 
 router.beforeEach((to, from, next) => {
   const currentUser = firebase.auth().currentUser;
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-
-  if (requiresAuth && !currentUser) next({ name: 'Login' });
-  else if (!requiresAuth && !!currentUser && to.name !== 'Home') next({ name: 'Home' });
+  if (requiresAuth && !currentUser) next({ name: 'login' });
+  else if (!requiresAuth && !!currentUser && to.name !== 'home') next({ name: 'home' });
   else next();
 });
 

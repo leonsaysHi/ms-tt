@@ -13,6 +13,7 @@ export default {
   },
   actions: {
     getRow({ commit }, uid) {
+      if (!uid) return 
       window.db.collection("users").doc(uid)
         .get().then(function(doc) {
           if (doc.exists) {

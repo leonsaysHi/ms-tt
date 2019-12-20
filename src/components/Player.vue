@@ -3,6 +3,7 @@
     <Controls />
     <NowPlaying />
     <div class="player">
+      <div class="toggler" @click="togglePlay"></div>
       <youtube
         ref="youtube"
         :player-vars="playerVars"
@@ -14,7 +15,7 @@
 <script>
 import Controls from "./Controls";
 import NowPlaying from "./NowPlaying";
-import { mapState, mapGetters, mapActions } from 'vuex';
+import { mapState, mapMutations, mapGetters, mapActions } from 'vuex';
 export default {
   components: {
     Controls,
@@ -65,11 +66,14 @@ export default {
   },
   methods: {
     ...mapActions("Library", {
+      togglePlay: 'togglePlay',
       tuneEnded: 'handleEnded',
+    }),
+    ...mapMutations("Library", {
       stop: 'stop',
+      play: 'play',
     }),
     ended() {
-      window.console.log('ended')
       if (this.control.repeatOne) {
         this.player.seekTo(0)
       }
@@ -96,11 +100,17 @@ export default {
        *  3 - buffering
        *  5 - video cued
        */
+      console.log('state', state)
       if (state.data === 0) {
         this.ended()
       }
       if (state.data === 1) {
         // this.updateVideoCurrentTime()
+        this.play()
+      }
+      if (state.data === 2) {
+        // this.updateVideoCurrentTime()
+        this.stop()
       }
     },
   },
@@ -112,6 +122,13 @@ export default {
     position:relative;
     width: 100%;
     padding-top: 50%;
+    .toggler {
+      position: absolute;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+    }
     ::v-deep iframe {
       position: absolute;
       top: 0;
