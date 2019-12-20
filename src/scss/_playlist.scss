@@ -21,14 +21,17 @@
         position: absolute;
         left: 0;
         top: 0;
-        right: 0;
+        right: .5rem;
         bottom: 0;
+        overflow: hidden;
+        overflow-y: auto;
       }
     }
     .playlist-player {
       order: 3;
       flex: 1 0 100%;
       padding-left: .5rem;
+      border-left: $border-width solid $border-color;
     }
   }
 }

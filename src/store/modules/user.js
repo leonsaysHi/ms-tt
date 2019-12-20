@@ -3,7 +3,7 @@ export default {
   namespaced: true,
   strict: process.env.NODE_ENV !== 'production',
   state: {
-    user: null
+    user: { uid: null, displayName: 'Guest' }
   },
   mutations: {
     setUser (state, payload) {
@@ -20,6 +20,9 @@ export default {
     },
   },
   getters: {
+    isLogged(state) {
+      return _.get(state.user, 'uid') && state.user.uid
+    },
     uid(state) {
       return _.get(state.user, 'uid', null)
     }

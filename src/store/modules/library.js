@@ -1,21 +1,21 @@
+const defsControl = () => ({
+    currentVideoId: null,
+    isPlaying: false,
+    repeatAll: false,
+    repeatOne: false,
+})
 export default {
   namespaced: true,
   strict: process.env.NODE_ENV !== 'production',
   state: {
-    rows: [],
     isWorking: true,
-    control: {
-      currentVideoId: null,
-      isPlaying: false,
-      repeatAll: false,
-      repeatOne: false,
-    },
+    rows: [],
+    control: defsControl()
   },
   mutations: {
     reset(state) {
       state.rows = []
-      state.isWorking = true
-      state.control.currentVideoId = null
+      state.control = defsControl()
     },
     setRows(state, list) {
       state.rows = list
@@ -83,16 +83,19 @@ export default {
         commit('stop')
       }
     },
-    togglePlay({ commit, state }) {
+    togglePlay({ commit, dispatch, state, getters }) {
       if (state.control.isPlaying) {
         commit('stop')
         return
+      }
+      if (!getters.currentIdx) {
+        dispatch('skip')
       }
       commit('play')
     },
     skip({ commit, getters, state }, moveIdx = 1) {
       const
-        currentItemIdx = getters.currentIdx
+        currentItemIdx = getters.currentIdx || -1
       let idx = currentItemIdx + moveIdx
       const idxMax = state.rows.length - 1
       if (idx < 0) { idx = idxMax }
