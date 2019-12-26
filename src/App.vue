@@ -1,20 +1,23 @@
 <template>
   <div id="app" class="d-flex flex-column align-items-stretch">
     <Header v-if="isLogged" />
-    <div class="flex-grow-1 d-flex align-items-stretch">
-      <router-view :key="$route.fullPath"></router-view>
+    <div class="app-body flex-grow-1 p-3" :class="{'-hide-player': !currentPlaylist && !currentPlayerTune}">
+      <div class="app-player"><Player /></div>
+      <div class="app-main"><router-view :key="$route.fullPath"></router-view></div>
     </div>
   </div>
 </template>
 
 <script>
 import firebase from 'firebase';
-import { mapGetters, mapMutations } from 'vuex';
+import { mapState, mapGetters, mapMutations } from 'vuex';
 import Header from './components/Header';
+import Player from "@/components/Player";
 export default {
   name: "App",
   components: {
-    Header
+    Header,
+    Player,
   },
   data() {
     return {
@@ -56,6 +59,12 @@ export default {
     ...mapGetters("User", {
       isLogged: 'isLogged',
       userId: 'uid',
+    }),
+    ...mapGetters("Playlists", {
+      currentPlaylist: 'currentPlaylist',
+    }),
+    ...mapState("Player", {
+      currentPlayerTune: 'current',
     }),
   },
   methods: {

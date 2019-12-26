@@ -1,16 +1,17 @@
 <template>
   <li class="list-group-item p-0 d-flex align-items-stretch" :class="{ 'bg-light': isCurrent }">
-    <b-button class="d-none d-lg-block align-self-center ml-2" @click="$emit('play')" :disabled="isCurrent" :variant="isCurrent ? 'light' : 'primary'">
+    <b-button class="d-none d-lg-block align-self-center ml-2" @click="$emit('play')" :disabled="isCurrent || isError" :variant="isCurrent ? 'light' : 'primary'">
       <play-icon />
     </b-button>
     <div class="title p-2" @click="$emit('play')">
-      <strong :class="{'text-muted': item.isWorking, 'text-danger': item.isErrored}">{{ item.title }} </strong>
+      <strong :class="{'text-muted': item.isWorking, 'text-danger': item.isError}">{{ item.title }} </strong>
       <div class="d-flex align-items-baseline">
         <small>Added by <strong><display-name :uid="item.uid" /></strong></small>
         <small class="mx-2 text-secondary">{{ item.date | moment("from") }}</small>
         <heart-icon v-if="hasVotes" class="text-danger" :size="12" />
         <heart-outline-icon v-else class="text-muted" :size="12" />
-        <small :class="{'text-danger': hasVotes}">{{ !item.votes ? 0 : item.votes.length }}</small>
+        <small :class="{'text-danger': hasVotes}" class="ml-1">{{ !item.votes ? 0 : item.votes.length }}</small>
+        <small v-if="isError" class="mx-2 text-warning"><alert-icon :size="12" /></small>
       </div>
     </div>
     <div class="py-2 pr-2 ml-auto d-flex flex-column flex-lg-row align-items-center">
@@ -49,9 +50,9 @@ export default {
     ...mapGetters("Playlists", {
       otherPlaylists: 'otherPlaylists',
     }),
-    ...mapGetters("Library", {
-      currentTune: 'current',
+    ...mapState("Player", {
       isPlaying: 'isPlaying',
+      currentTune: 'current',
     }),
     ...mapState("Players", {
       usersList: 'rows',
@@ -67,6 +68,9 @@ export default {
     },
     isCurrentAndPlaying() {
       return this.isCurrent && this.isPlaying
+    },
+    isError() {
+      return this.item.error && this.item.error === true
     },
     hasVotes() {
       return _.get(this.item, 'votes') && _.isArray(this.item.votes) && this.item.votes.length > 0

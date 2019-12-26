@@ -1,5 +1,5 @@
 <template>
-  <div class="flex-grow-1 d-flex align-items-start flex-wrap p-3">
+  <div class="flex-grow-1 d-flex align-items-start flex-wrap">
     <b-card v-for="playlist in playlists" :title="playlist.title" :key="playlist.id" bg-variant="light" class="m-3">
       <b-card-text>
         {{ playlist.users.length }} players.

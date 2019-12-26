@@ -16,7 +16,7 @@
 <script>
 import Item from './library/LibraryItem';
 import RemoveTune from '@/mixins/removeTune';
-import { mapState, mapGetters, mapActions } from 'vuex';
+import { mapState, mapGetters, mapMutations } from 'vuex';
 export default {
   name: "Library",
   components: {
@@ -42,16 +42,14 @@ export default {
     }),
   },
   methods: {
-    ...mapActions("Library", {
-      togglePlay: 'togglePlay',
-      playTune: 'skipTo',
+    ...mapMutations("Player", {
+      playTune: 'play',
     }),
     toggleAddModal() {
       this.showAddModal = !this.showAddModal
     },
     handlePlayTune(tune) {
       this.playTune(tune)
-      if (!this.isPlaying) { this.togglePlay() }
     },
     deleteRow(tune) {
       this.removeTune( this.currentPlaylist.id, tune)
