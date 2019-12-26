@@ -1,11 +1,9 @@
 <template>
   <div>
     <div class="btn-group mb-2" role="group">
-      <b-button :variant="canPlay ? 'primary' : ''" @click="togglePlay">
-        <play-icon v-if="canPlay" />
-        <stop-icon v-else />
-      </b-button>
-      <b-button :disabled="!canSkip" @click="skip(1)"><skip-next-icon /></b-button>
+      <b-button v-if="!isPlaying || isPaused" :variant="disablePlay ? '' : 'primary'" @click="handlePlay" :disabled="disablePlay"><play-icon /></b-button>
+      <b-button v-else variant="primary" @click="handlePause" :disabled="disableControls"><pause-icon /></b-button>
+      <b-button @click="handleSkip" :disabled="disableControls || !canSkip"><skip-next-icon /></b-button>
       <b-button :variant="repeatMode ? 'primary' : ''" @click="toggleRepeat">
         <repeat-icon v-if="repeatMode === 'all'" />
         <repeat-once-icon v-else-if="repeatMode === 'one'" />
@@ -16,35 +14,65 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions } from 'vuex';
+import { mapState, mapGetters, mapMutations } from 'vuex';
 export default {
   data() {
     return { }
   },
   computed: {
-    ...mapState("Library", [
-      'control',
-    ]),
+    ...mapState("Player", {
+      isReady: 'isReady',
+      currentTune: 'current',
+      isPlaying: 'isPlaying',
+      isPaused: 'isPaused',
+    }),
+    ...mapState("Library", {
+      repeatAll: 'repeatAll',
+      repeatOne: 'repeatOne',
+    }),
     ...mapGetters("Library", {
       queue: 'queue',
-      currentTune: 'current',
+      getNextInQueue: 'next',
     }),
-    canPlay() {
-      return this.queue.length > 0 && !this.control.isPlaying
+    disableControls() {
+      return !this.isReady || !this.currentTune
+    },
+    disablePlay() {
+      return !this.isReady || !this.nextTune
+    },
+    nextTune() {
+      return this.getNextInQueue(this.currentTune)
     },
     canSkip() {
-      return this.queue.length > 1
+      return this.nextTune
     },
     repeatMode() {
-      return this.control.repeatAll ? 'all' : this.control.repeatOne ? 'one' : null
+      return this.repeatAll ? 'all' : this.repeatOne ? 'one' : null
     },
   },
   methods: {
-    ...mapActions("Library", {
-      togglePlay: 'togglePlay',
-      skip: 'skip',
+    ...mapMutations("Library", {
       toggleRepeat: 'toggleRepeat',
     }),
+    ...mapMutations("Player", {
+      play: 'play',
+      pause: 'pause',
+      stop: 'stop',
+    }),
+    handlePlay() {
+      this.play(!this.isPaused ? this.nextTune : null)
+    },
+    handlePause() {
+      this.pause()
+    },
+    handleSkip(){
+      if (this.nextTune) {
+        this.play(this.nextTune)
+      }
+      else {
+        this.stop()
+      }
+    },
   },
 };
 </script>

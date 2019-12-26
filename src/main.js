@@ -29,10 +29,12 @@ Vue.config.productionTip = false;
 /* Icons */
 // https://dev.materialdesignicons.com/icons
 import AccountGroup from 'vue-material-design-icons/AccountGroup.vue';
+import Alert from 'vue-material-design-icons/Alert.vue';
 import Close from 'vue-material-design-icons/Close.vue';
 import DotsVertical from 'vue-material-design-icons/DotsVertical.vue';
 import Heart from 'vue-material-design-icons/Heart.vue';
 import HeartOutline from 'vue-material-design-icons/HeartOutline.vue';
+import Pause from 'vue-material-design-icons/Pause.vue';
 import Play from 'vue-material-design-icons/Play.vue';
 import PlusThick from 'vue-material-design-icons/PlusThick.vue';
 import Repeat from 'vue-material-design-icons/Repeat.vue';
@@ -43,10 +45,12 @@ import SkipNext from 'vue-material-design-icons/SkipNext.vue';
 import Stop from 'vue-material-design-icons/Stop.vue';
 
 Vue.component('account-group-icon', AccountGroup);
+Vue.component('alert-icon', Alert);
 Vue.component('close-icon', Close);
 Vue.component('dots-vertical-icon', DotsVertical);
 Vue.component('heart-icon', Heart);
 Vue.component('heart-outline-icon', HeartOutline);
+Vue.component('pause-icon', Pause);
 Vue.component('play-icon', Play);
 Vue.component('plus-thick-icon', PlusThick);
 Vue.component('repeat-icon', Repeat);

@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex';
+import { mapState } from 'vuex';
 import VoteTune from '@/mixins/voteTune';
 export default {
   mixins: [VoteTune],
@@ -41,7 +41,7 @@ export default {
     ...mapState("Players", {
       usersList: 'rows',
     }),
-    ...mapGetters("Library", {
+    ...mapState("Player", {
       currentTune: 'current',
     }),
     isOwner() {

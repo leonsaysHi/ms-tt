@@ -1,21 +1,29 @@
-const defsControl = () => ({
-    currentVideoId: null,
-    isPlaying: false,
-    repeatAll: false,
-    repeatOne: false,
-})
 export default {
   namespaced: true,
   strict: process.env.NODE_ENV !== 'production',
   state: {
     isWorking: true,
     rows: [],
-    control: defsControl()
+    repeatAll: false,
+    repeatOne: false,
   },
   mutations: {
     reset(state) {
       state.rows = []
-      state.control = defsControl()
+    },
+    toggleRepeat(state) {
+      if (state.repeatAll) {
+        state.repeatAll = false
+        state.repeatOne = true
+      }
+      else if (state.repeatOne) {
+        state.repeatAll = false
+        state.repeatOne = false
+      }
+      else {
+        state.repeatAll = true
+        state.repeatOne = false
+      }
     },
     setRows(state, list) {
       state.rows = list
@@ -37,79 +45,25 @@ export default {
       row.isSaved = true
       state.rows.splice(rowIdx, 1, row)
     },
-    play(state) {
-      state.control = { ...state.control, isPlaying: true }
+    playbackError(state, row) {
+      let idx = Number(state.rows.findIndex( r => r.video_id === row.video_id))
+      if (idx > -1) { state.rows[idx].error = true }
     },
-    skip(state, idx) {
-      state.control = { ...state.control, currentVideoId: state.rows[idx].video_id }
-    },
-    stop(state) {
-      state.control = { ...state.control, isPlaying: false }
-    },
-    setRepeatAll(state) {
-      state.control = { ...state.control, repeatAll: true, repeatOne: false }
-    },
-    setRepeatOne(state) {
-      state.control = { ...state.control, repeatAll: false, repeatOne: true }
-    },
-    setRepeatOff(state) {
-      state.control = { ...state.control, repeatAll: false, repeatOne: false }
-    }
   },
   getters: {
     queue(state) {
       return state.rows
     },
-    current(state) {
-      return state.control.currentVideoId ? state.rows.find(v => v.video_id === state.control.currentVideoId) : null
-    },
-    currentIdx(state) {
-      return state.control.currentVideoId ? state.rows.findIndex(v => v.video_id === state.control.currentVideoId) : null
-    },
-    isPlaying(state) {
-      return state.control.isPlaying
+    next(state) {
+      return (row) => {
+        if (state.rows.length === 0) return null
+        if (!row) return state.rows[0]
+        let idx = Number(state.rows.findIndex( r => r.video_id === row.video_id)) + 1
+        if (idx > state.rows.length - 1) { idx = state.repeatAll ? 0 : null }
+        return state.rows[idx] || null
+      }
     },
   },
   actions: {
-    handleEnded({ state, getters, dispatch, commit }) {
-      const
-        currentItemIdx = getters.currentIdx
-      const idxMax = state.rows.length - 1
-      console.log('handleEnded')
-      if (state.control.repeatAll || currentItemIdx < idxMax) {
-        dispatch('skip')
-      }
-      else {
-        commit('stop')
-      }
-    },
-    togglePlay({ commit, dispatch, state, getters }) {
-      if (state.control.isPlaying) {
-        commit('stop')
-        return
-      }
-      if (!getters.currentIdx) {
-        dispatch('skip')
-      }
-      commit('play')
-    },
-    skip({ commit, getters, state }, moveIdx = 1) {
-      const
-        currentItemIdx = getters.currentIdx || -1
-      let idx = currentItemIdx + moveIdx
-      const idxMax = state.rows.length - 1
-      if (idx < 0) { idx = idxMax }
-      if (idx > idxMax) { idx = 0 }
-      commit('skip', idx)
-    },
-    skipTo({ commit, state }, row) {
-      let idx = state.rows.findIndex( item => item.video_id == row.video_id )
-      commit('skip', idx)
-    },
-    toggleRepeat({ state, commit }) {
-      if (state.control.repeatAll) { commit('setRepeatOne') }
-      else if (state.control.repeatOne) { commit('setRepeatOff') }
-      else { commit('setRepeatAll') }
-    }
   },
 };

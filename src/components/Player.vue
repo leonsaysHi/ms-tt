@@ -1,12 +1,14 @@
 <template>
-  <div>
+  <div class="pl-lg-3 pb-3 pb-lg-0">
     <Controls />
     <NowPlaying />
-    <div class="player">
-      <div class="toggler" @click="togglePlay"></div>
+    <div class="player" :key="playerReloaded">
       <youtube
         ref="youtube"
         :player-vars="playerVars"
+        @ready="playerReady"
+        @error="playerError"
+
       ></youtube>
     </div>
   </div>
@@ -15,7 +17,7 @@
 <script>
 import Controls from "./Controls";
 import NowPlaying from "./NowPlaying";
-import { mapState, mapMutations, mapGetters, mapActions } from 'vuex';
+import { mapState, mapGetters, mapMutations } from 'vuex';
 export default {
   components: {
     Controls,
@@ -23,57 +25,65 @@ export default {
   },
   data() {
     return {
+      player: null,
+      playerReloaded: 0,
       playerVars: {
         controls: 0,
         modestbranding: 1,
       },
     }
   },
-  async mounted () {
-    this.player.addEventListener('onStateChange', this.playerChange);
-    this.player.addEventListener('onError', this.playerError);
-    // this.playerPlay()
-  },
   computed: {
-    ...mapState("Library", [
-      'control',
-    ]),
-    ...mapGetters("Library", {
-      currentTune: 'current',
+    ...mapState("Player", {
+      isReady: 'isReady',
+      isPaused: 'isPaused',
+      current: 'current',
+      isPlaying: 'isPlaying',
     }),
-    isPlaying() {
-      return this.control.isPlaying || false
-    },
-    player () {
-      return this.$refs.youtube.player
-    }
+    ...mapGetters("Library", {
+      getNextInQueue: 'next',
+    }),
   },
   watch: {
-    currentTune: function(newVal, oldVal) {
+    current: function(newVal, oldVal) {
       if (newVal && (!oldVal || newVal.video_id !== oldVal.video_id) ) {
         this.playerPlay()
       }
     },
-    isPlaying: function(newVal, oldVal) {
-      if (newVal === oldVal) { return }
-      else if (newVal) {
-        this.playerPlay()
-      } else {
-        this.playerStop()
+    isPaused: function(isPaused) {
+      if (this.isPlaying && this.isPaused && isPaused) {
+        this.playerPause()
       }
-    },
-
+      else if (this.isPlaying && !this.isPaused && !isPaused) {
+        this.playerUnpause()
+      }
+    }
   },
   methods: {
-    ...mapActions("Library", {
-      togglePlay: 'togglePlay',
-      tuneEnded: 'handleEnded',
-    }),
     ...mapMutations("Library", {
+      tuneError: 'playbackError',
+    }),
+    ...mapMutations("Player", {
+      setPlayerReady: 'setReady',
+      setPlayerError: 'setError',
       stop: 'stop',
       play: 'play',
+      pause: 'pause',
     }),
-    ended() {
+    playerReady() {
+      this.player = this.$refs.youtube.player
+      this.player.addEventListener('onStateChange', this.playerChange)
+      this.setPlayerReady()
+      if (this.isPlaying && this.current) {
+        this.playerPlay()
+      }
+    },
+    videoCued() {
+      if (this.isPlaying) {
+        this.player.loadVideoById(this.current.video_id)
+      }
+    },
+    videoEnded() {
       if (this.control.repeatOne) {
         this.player.seekTo(0)
       }
@@ -82,13 +92,22 @@ export default {
       }
     },
     playerPlay () {
-      if (this.currentTune && this.isPlaying) { this.player.loadVideoById(this.currentTune.video_id) }
+      if (this.isReady) {
+        this.currentVideoId = this.current.video_id
+        this.player.cueVideoById(this.current.video_id)
+      }
     },
-    playerStop () {
+    playerUnpause() {
+      this.player.playVideo()
+    },
+    playerPause() {
       this.player.pauseVideo()
     },
-    playerError (error) {
-      window.console.log('Error', error)
+    playerError (err) {
+      console.log(err)
+      this.tuneError(this.current)
+      this.playerReloaded++
+      this.play(this.getNextInQueue(this.current))
     },
     playerChange (state) {
       /**
@@ -102,15 +121,13 @@ export default {
        */
       console.log('state', state)
       if (state.data === 0) {
-        this.ended()
+        this.videoEnded()
       }
       if (state.data === 1) {
-        // this.updateVideoCurrentTime()
-        this.play()
+        // this.play()
       }
-      if (state.data === 2) {
-        // this.updateVideoCurrentTime()
-        this.stop()
+      if (state.data === 5) {
+        this.videoCued()
       }
     },
   },
