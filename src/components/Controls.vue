@@ -38,7 +38,7 @@ export default {
       return !this.isReady || !this.currentTune
     },
     disablePlay() {
-      return !this.isReady || !this.nextTune
+      return !this.isReady
     },
     nextTune() {
       return this.getNextInQueue(this.currentTune)
@@ -60,7 +60,12 @@ export default {
       stop: 'stop',
     }),
     handlePlay() {
-      this.play(!this.isPaused ? this.nextTune : null)
+      if (this.isPaused) {
+        this.play()
+        return
+      }
+      const nextTune = this.nextTune || this.queue[0]
+      this.play(nextTune)
     },
     handlePause() {
       this.pause()
