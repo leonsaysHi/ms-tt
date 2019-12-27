@@ -35,7 +35,7 @@ export default {
   created() {
     firebase.auth().onAuthStateChanged(async (user) => {
       if (user) {
-        await this.setUser(user)
+        await this.setUser({ email: user.email, uid: user.uid })
         const
           updatePlaylistsStore = this.setPlaylists,
           updateUserStore = this.setUser
