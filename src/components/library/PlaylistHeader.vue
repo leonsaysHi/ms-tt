@@ -2,8 +2,9 @@
   <div class="flex-grow-1 d-flex justify-content-between">
     <h2 class="mb-0">{{ currentPlaylist.title }}</h2>
     <div class="d-flex align-items-start">
-      <PlaylistUsers class="ml-2"></PlaylistUsers>
-      <AddVideo class="ml-2"></AddVideo>
+      <PlaylistFilter class="ml-2" />
+      <PlaylistUsers class="ml-2" />
+      <AddVideo class="ml-2" />
     </div>
   </div>
 </template>
@@ -12,8 +13,9 @@
 import { mapGetters } from 'vuex';
 import PlaylistUsers from './PlaylistUsers';
 import AddVideo from './AddVideo';
+import PlaylistFilter from './PlaylistFilter';
 export default {
-  components: { PlaylistUsers, AddVideo },
+  components: { PlaylistUsers, AddVideo, PlaylistFilter },
   data() {
     return  {
     }

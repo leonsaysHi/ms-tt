@@ -40,9 +40,6 @@ export default {
     ...mapGetters("Library", {
       queue: 'queue',
     }),
-    ...mapState("Players", {
-      usersList: 'rows',
-    }),
     players() {
       const players = this.currentPlaylist.users || []
       return players

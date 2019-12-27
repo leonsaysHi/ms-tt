@@ -19,7 +19,7 @@ export default {
       usersList: 'rows',
     }),
     displayName() {
-      const user = _.get(this.usersList, this.uid)
+      const user = this.usersList.find(u => u.uid === this.uid)
       if (!user) { this.getUser(this.uid) }
       return user ? user.displayName : '...'
     }
