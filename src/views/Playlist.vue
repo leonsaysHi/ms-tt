@@ -46,6 +46,7 @@ export default {
     }),
     ...mapMutations("Library", {
       resetLibrary: 'reset',
+      gettingLibraryRows: 'gettingRows',
       setLibraryRows: 'setRows',
     }),
     connectToDb(id) {
@@ -53,6 +54,7 @@ export default {
         this.currentTunesListener()
       }
       const updateStoreRows = this.setLibraryRows
+      this.gettingLibraryRows()
       this.currentTunesListener = window.db.collection("playlists").doc(id).collection("tunes").orderBy("date")
         .onSnapshot(function(querySnapshot) {
           var tunes = [];
