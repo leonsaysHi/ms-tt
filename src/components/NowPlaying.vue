@@ -8,7 +8,7 @@
             <strong>{{ currentTune.title }} </strong>
             <br><span>{{ owner.displayName }}</span> <small class="text-secondary">{{ currentTune.date | moment("from") }}</small>
           </div>
-          <div class="ml-auto">
+          <div class="ml-auto" v-if="isUser">
             <b-link v-if="!voteIsWorking" @click="toggleVote" :class="{ 'text-muted': !hasOwnerUpvoted, 'text-danger': hasOwnerUpvoted }">
               <heart-icon v-if="hasOwnerUpvoted" />
               <heart-outline-icon v-else />
@@ -44,6 +44,9 @@ export default {
     ...mapState("Player", {
       currentTune: 'current',
     }),
+    isUser() {
+      return this.user && this.user.uid ? true : false
+    },
     isOwner() {
       return this.currentTune.uid === this.user.uid
     },

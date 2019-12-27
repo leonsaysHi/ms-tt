@@ -44,7 +44,7 @@ const router = new Router({
       name: 'playlist',
       component: Playlist,
       meta: {
-        requiresAuth: true
+        requiresAuth: false
       }
     },
     {
@@ -62,7 +62,6 @@ router.beforeEach((to, from, next) => {
   const currentUser = firebase.auth().currentUser;
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
   if (requiresAuth && !currentUser) next({ name: 'login' });
-  else if (!requiresAuth && !!currentUser && to.name !== 'home') next({ name: 'home' });
   else next();
 });
 

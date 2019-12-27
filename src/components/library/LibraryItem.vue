@@ -14,7 +14,7 @@
         <small v-if="isError" class="mx-2 text-warning"><alert-icon :size="12" /></small>
       </div>
     </div>
-    <div class="py-2 pr-2 ml-auto d-flex flex-column flex-lg-row align-items-center">
+    <div v-if="isUser" class="py-2 pr-2 ml-auto d-flex flex-column flex-lg-row align-items-center">
       <b-spinner v-if="item.isWorking || isWorking" small variant="primary" class="ml-2"></b-spinner>
       <b-dropdown id="dropdown-actions" variant="light" size="sm" class="ml-lg-2" no-caret>
         <template v-slot:button-content>
@@ -57,14 +57,17 @@ export default {
     ...mapState("Players", {
       usersList: 'rows',
     }),
+    isUser() {
+      return this.userId || false
+    },
     userId() {
-      return this.user.uid
+      return _.get(this.user, 'uid')
     },
     isCurrent() {
       return this.currentTune && this.currentTune.video_id === this.item.video_id
     },
     isOwner() {
-      return this.item.uid === this.userId
+      return this.userId && this.item.uid === this.userId
     },
     isCurrentAndPlaying() {
       return this.isCurrent && this.isPlaying

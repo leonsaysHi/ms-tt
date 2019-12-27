@@ -1,13 +1,11 @@
 <template>
   <div class="flex-grow-1 d-flex align-items-stretch" :class="{'flex-wrap': !currentPlaylist}">
-    <template v-if="currentPlaylist">
-      <div class="playlist-wrapper">
-        <div class="playlist-header pb-2"><PlaylistHeader :key="currentPlaylistId" /></div>
-        <div class="playlist-body">
-          <div class="playlist-body-inner"><Library :key="currentPlaylistId" /></div>
-        </div>
+    <div class="playlist-wrapper">
+      <div class="playlist-header pb-2" v-if="currentPlaylist"><PlaylistHeader :key="currentPlaylistId" /></div>
+      <div class="playlist-body">
+        <div class="playlist-body-inner"><Library :key="currentPlaylistId" /></div>
       </div>
-    </template>
+    </div>
   </div>
 </template>
 
