@@ -1,6 +1,7 @@
 <template>
   <div class="pl-lg-3 pb-3 pb-lg-0">
     <Controls />
+    <UsernamePrompt />
     <NowPlaying />
     <div class="player" :key="playerReloaded">
       <youtube
@@ -17,18 +18,20 @@
 <script>
 import Controls from "./Controls";
 import NowPlaying from "./NowPlaying";
+import UsernamePrompt from '../components/UsernamePrompt.vue';
 import { mapState, mapGetters, mapMutations } from 'vuex';
 export default {
   components: {
     Controls,
     NowPlaying,
+    UsernamePrompt,
   },
   data() {
     return {
       player: null,
       playerReloaded: 0,
       playerVars: {
-        controls: 0,
+        controls: 1,
         modestbranding: 1,
       },
     }
@@ -39,6 +42,10 @@ export default {
       isPaused: 'isPaused',
       current: 'current',
       isPlaying: 'isPlaying',
+    }),
+    ...mapState("Library", {
+      repeatAll: 'repeatAll',
+      repeatOne: 'repeatOne',
     }),
     ...mapGetters("Library", {
       getNextInQueue: 'next',
@@ -84,11 +91,11 @@ export default {
       }
     },
     videoEnded() {
-      if (this.control.repeatOne) {
+      if (this.repeatOne) {
         this.player.seekTo(0)
       }
       else {
-        this.tuneEnded()
+        this.playNext()
       }
     },
     playerPlay () {
@@ -104,10 +111,10 @@ export default {
       this.player.pauseVideo()
     },
     playerError (err) {
-      console.log(err)
+      console.warn(err)
       this.tuneError(this.current)
       this.playerReloaded++
-      this.play(this.getNextInQueue(this.current))
+      this.playNext()
     },
     playerChange (state) {
       /**
@@ -119,7 +126,6 @@ export default {
        *  3 - buffering
        *  5 - video cued
        */
-      console.log('state', state)
       if (state.data === 0) {
         this.videoEnded()
       }
@@ -130,6 +136,14 @@ export default {
         this.videoCued()
       }
     },
+    playNext() {
+      const nextTune = this.getNextInQueue(this.current)
+      if (!nextTune) {
+        this.stop()
+        return
+      }
+      this.play(this.getNextInQueue(this.current))
+    }
   },
 };
 </script>

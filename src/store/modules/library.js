@@ -9,6 +9,7 @@ export default {
   },
   mutations: {
     reset(state) {
+      state.isWorking = false
       state.rows = []
     },
     toggleRepeat(state) {
@@ -24,6 +25,9 @@ export default {
         state.repeatAll = true
         state.repeatOne = false
       }
+    },
+    gettingRows(state) {
+      state.isWorking = true
     },
     setRows(state, list) {
       state.rows = list

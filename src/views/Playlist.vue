@@ -1,13 +1,11 @@
 <template>
   <div class="flex-grow-1 d-flex align-items-stretch" :class="{'flex-wrap': !currentPlaylist}">
-    <template v-if="currentPlaylist">
-      <div class="playlist-wrapper">
-        <div class="playlist-header pb-2"><PlaylistHeader :key="currentPlaylistId" /></div>
-        <div class="playlist-body">
-          <div class="playlist-body-inner"><Library :key="currentPlaylistId" /></div>
-        </div>
+    <div class="playlist-wrapper">
+      <div class="playlist-header pb-2" v-if="currentPlaylist"><PlaylistHeader :key="currentPlaylistId" /></div>
+      <div class="playlist-body">
+        <div class="playlist-body-inner"><Library :key="currentPlaylistId" /></div>
       </div>
-    </template>
+    </div>
   </div>
 </template>
 
@@ -46,6 +44,7 @@ export default {
     }),
     ...mapMutations("Library", {
       resetLibrary: 'reset',
+      gettingLibraryRows: 'gettingRows',
       setLibraryRows: 'setRows',
     }),
     connectToDb(id) {
@@ -53,6 +52,7 @@ export default {
         this.currentTunesListener()
       }
       const updateStoreRows = this.setLibraryRows
+      this.gettingLibraryRows()
       this.currentTunesListener = window.db.collection("playlists").doc(id).collection("tunes").orderBy("date")
         .onSnapshot(function(querySnapshot) {
           var tunes = [];

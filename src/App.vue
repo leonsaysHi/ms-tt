@@ -1,6 +1,12 @@
 <template>
   <div id="app" class="d-flex flex-column align-items-stretch">
     <Header v-if="isLogged" />
+    <b-navbar v-else type="light" variant="light">
+      <b-navbar-nav class="ml-auto">
+        <b-nav-item :to="{ name: 'login' }">Login</b-nav-item>
+        <b-nav-item :to="{ name: 'signUp' }">Signup</b-nav-item>
+      </b-navbar-nav>
+    </b-navbar>
     <div class="app-body flex-grow-1 p-3" :class="{'-hide-player': !currentPlaylist && !currentPlayerTune}">
       <div class="app-player"><Player /></div>
       <div class="app-main"><router-view :key="$route.fullPath"></router-view></div>

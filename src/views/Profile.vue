@@ -37,7 +37,9 @@
 import firebase from 'firebase';
 import Playlists from '@/components/Playlists.vue';
 import { mapState, mapMutations } from 'vuex';
+import UserDoc from '@/mixins/userDoc';
 export default {
+  mixins: [UserDoc],
   components: {
    Playlists
   },
@@ -70,14 +72,9 @@ export default {
       });
     },
     updateDisplayName () {
-      var user = firebase.auth().currentUser;
-      return user.updateProfile({
+      return this.saveUserDoc(this.user.uid, {
         displayName: this.displayName
-      }).then(function() {
-        // Update successful.
-      }).catch(function(error) {
-        window.console.log(error)
-      });
+      })
     },
     async saveAll () {
       this.isWorking = true
