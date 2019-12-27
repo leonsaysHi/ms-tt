@@ -2,13 +2,13 @@ export default {
   namespaced: true,
   strict: process.env.NODE_ENV !== 'production',
   state: {
-    rows: {},
+    rows: [],
   },
   mutations: {
     addRow(state, { uid, row }) {
-      const rows = _.assign({}, state.rows)
-      rows[uid] = row
-      state.rows = rows
+      if (!state.rows.find(r => r.uid === uid)) {
+        state.rows.push({ uid, ...row })
+      }
     },
   },
   actions: {

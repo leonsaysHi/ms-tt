@@ -1,3 +1,8 @@
+const defaultFilter = () => ({
+  player: null,
+  upvote: false,
+})
+
 export default {
   namespaced: true,
   strict: process.env.NODE_ENV !== 'production',
@@ -6,6 +11,7 @@ export default {
     rows: [],
     repeatAll: false,
     repeatOne: false,
+    filter: defaultFilter(),
   },
   mutations: {
     reset(state) {
@@ -53,18 +59,35 @@ export default {
       let idx = Number(state.rows.findIndex( r => r.video_id === row.video_id))
       if (idx > -1) { state.rows[idx].error = true }
     },
+    setFilter(state, payload) {
+      state.filter = Object.assign({}, state.filter, payload)
+    },
+    resetFilter(state) {
+      state.filter = defaultFilter()
+    },
   },
   getters: {
     queue(state) {
       return state.rows
+        .filter(r => {
+          return (!state.filter.player || r.uid === state.filter.player)
+            && (!state.filter.upvote || (r.votes && r.votes.length > 0))
+        })
     },
-    next(state) {
+    isFiltered(state) {
+      let diff = false
+      _.forOwn(defaultFilter(), function(value, key) {
+        diff = diff || _.get(state.filter, key) !== value
+      })
+      return diff
+    },
+    next(state, getters) {
       return (row) => {
-        if (state.rows.length === 0) return null
-        if (!row) return state.rows[0]
-        let idx = Number(state.rows.findIndex( r => r.video_id === row.video_id)) + 1
-        if (idx > state.rows.length - 1) { idx = state.repeatAll ? 0 : null }
-        return state.rows[idx] || null
+        if (getters.queue.length === 0) return null
+        if (!row) return getters.queue[0]
+        let idx = Number(getters.queue.findIndex( r => r.video_id === row.video_id)) + 1
+        if (idx > getters.queue.length - 1) { idx = state.repeatAll ? 0 : null }
+        return getters.queue[idx] || null
       }
     },
   },
