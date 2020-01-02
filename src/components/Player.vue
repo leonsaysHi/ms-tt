@@ -3,12 +3,12 @@
     <Controls />
     <NowPlaying />
     <div class="player" :key="playerReloaded">
+      <div class="toggler" v-if="!current" @click="handleTogglerClick"></div>
       <youtube
         ref="youtube"
         :player-vars="playerVars"
         @ready="playerReady"
         @error="playerError"
-
       ></youtube>
     </div>
   </div>
@@ -28,7 +28,7 @@ export default {
       player: null,
       playerReloaded: 0,
       playerVars: {
-        controls: 1,
+        controls: 0,
         modestbranding: 1,
       },
     }
@@ -140,6 +140,9 @@ export default {
         return
       }
       this.play(this.getNextInQueue(this.current))
+    },
+    handleTogglerClick() {
+      this.playNext()
     }
   },
 };
