@@ -36,6 +36,7 @@ export default {
       }
     },
     toggleShuffle(state) {
+      // todo > shuffle current playing row should be first
       state.shuffle = _.isArray(state.shuffle) ? null : _.shuffle(state.rows.map( (r, idx) => idx))
     },
     gettingRows(state) {
