@@ -21,9 +21,9 @@
           trim
         ></b-form-input>
       </b-form-group>
-      <div class="d-flex align-items-start details">
+      <div class="d-lg-flex align-items-start details">
         <b-spinner  small variant="primary" v-if="videoId && !hasVideoDatas"></b-spinner>
-        <div class="player mr-2 border-right bg-dark" :class="{'align-self-stretch': hasVideoDatas}">
+        <div class="player mr-2 mb-3 border-right bg-dark" :class="{'align-self-stretch': hasVideoDatas}">
           <div>
             <youtube
               ref="youtube"
@@ -31,15 +31,23 @@
             />
           </div>
         </div>
-        <div v-if="hasVideoDatas" class="ml-2 flex-grow-1">
+        <div v-if="hasVideoDatas" class="ml-lg-2 flex-grow-1">
           <b-form-group
             label="Title"
             label-for="input-title"
           >
             <b-form-input id="input-title" v-model="videoDatas.title" :disabled="videoAlreadyAdded || !hasVideoDatas" :state="videoDatas.title.length > 0" trim></b-form-input>
           </b-form-group>
-          <b-button v-if="videoAlreadyAdded" :disabled="true">Already added by <display-name :uid="videoAlreadyAdded.uid" /></b-button>
-          <b-button v-else variant="primary" @click="add">Add</b-button>
+          <b-form-group
+            label="Shout"
+            label-for="input-message"
+          >
+            <b-form-input id="input-message" v-model="videoDatas.message" :disabled="videoAlreadyAdded || !hasVideoDatas" trim></b-form-input>
+          </b-form-group>
+          <div class="d-flex">
+            <b-button v-if="videoAlreadyAdded" :disabled="true">Already added by <display-name :uid="videoAlreadyAdded.uid" /></b-button>
+            <b-button v-else variant="primary" @click="add" class="ml-auto">Add</b-button>
+          </div>
         </div>
       </div>
     </b-modal>
@@ -132,10 +140,11 @@ export default {
     },
     add () {
       const
-        { video_id, title } = this.videoDatas,
+        { video_id, title, message } = this.videoDatas,
         tune = {
           video_id,
           title,
+          message,
           uid: this.userId,
           date: new Date().getTime(),
         }
