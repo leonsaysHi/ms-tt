@@ -20,7 +20,8 @@
         <template v-slot:button-content>
           <dots-vertical-icon />
         </template>
-        <b-dropdown-item :disabled="otherPlaylists.length === 0 " @click="tuneToShare = item">Send to playlist...</b-dropdown-item>
+        <b-dropdown-item :disabled="otherPlaylists.length === 0" @click="tuneToShare = item">Send to playlist...</b-dropdown-item>
+        <b-dropdown-item :disabled="!isOwner" @click="$emit('edit')">Edit</b-dropdown-item>
         <b-dropdown-item :disabled="!isOwner" @click="$emit('delete')"><span :class="{'text-danger': isOwner}">Delete</span></b-dropdown-item>
       </b-dropdown>
     </div>
