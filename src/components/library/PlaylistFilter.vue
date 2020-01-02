@@ -15,9 +15,12 @@
       >
         <b-form-select v-model="values.player" :options="playerOptions"></b-form-select>
       </b-form-group>
-      <b-form-group label="Order by">
-        <b-form-checkbox v-model="values.upvote" button :button-variant="values.upvote ? 'primary' : 'light'">
-          <heart-icon /><br>Upvote
+      <b-form-group label="Upvoted:">
+        <b-form-checkbox v-model="values.upvoted" button :button-variant="values.upvoted ? 'primary' : 'light'">
+          <heart-icon /><br>by all
+        </b-form-checkbox>
+        <b-form-checkbox v-model="values.upvotedByMe" button :button-variant="values.upvotedByMe ? 'primary' : 'light'" class="ml-1">
+          <heart-icon /><br>by me
         </b-form-checkbox>
       </b-form-group>
     </b-modal>
@@ -33,7 +36,8 @@ export default {
     return  {
       modalShow: false,
       values: {
-        upvote: false,
+        upvoted: false,
+        upvotedByMe: false,
         player: null,
       },
     }

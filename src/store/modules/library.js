@@ -67,12 +67,17 @@ export default {
     },
   },
   getters: {
-    queue(state) {
-      return state.rows
-        .filter(r => {
-          return (!state.filter.player || r.uid === state.filter.player)
-            && (!state.filter.upvote || (r.votes && r.votes.length > 0))
-        })
+    queue(state, getters, rootState, rootGetters) {
+      console.log(rootGetters)
+      const uid = rootGetters['User/uid']
+      let filtered = state.rows
+        .filter(r => (!state.filter.player || r.uid === state.filter.player) )
+        .filter(r => (
+          (!state.filter.upvoted && !state.filter.upvotedByMe)
+          || ( state.filter.upvoted && r.votes && r.votes.length > 0 )
+          || ( state.filter.upvotedByMe && r.votes && r.votes.includes(uid) )
+        ))
+      return filtered
     },
     isFiltered(state) {
       let diff = false
