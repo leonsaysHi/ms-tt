@@ -1,5 +1,6 @@
 <template>
   <div id="app" class="d-flex flex-column align-items-stretch">
+    <UsernamePrompt />
     <Header v-if="isLogged" />
     <b-navbar v-else type="light" variant="light">
       <b-navbar-nav class="ml-auto">
@@ -17,17 +18,20 @@
 <script>
 import firebase from 'firebase';
 import { mapState, mapGetters, mapMutations } from 'vuex';
-import Header from './components/Header';
+import Header from '@/components/Header';
 import Player from "@/components/Player";
+import UsernamePrompt from '@/components/UsernamePrompt.vue';
 export default {
   name: "App",
   components: {
     Header,
     Player,
+    UsernamePrompt,
   },
   data() {
     return {
       isWorking: true,
+
       currentPlaylistsListener: null,
       currentUserListener: null,
     }
