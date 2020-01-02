@@ -7,52 +7,40 @@
           @play="handlePlayTune(tune)"
           @delete="handleDeleteRow(tune)"
           @edit="handleEditRow(tune)"
+          @share="handleShareRow(tune)"
           :item="tune"
         />
       </template>
     </ul>
+    <ShareTune v-model="rowToShare" @done="rowToShare = null" />
+    <EditTune v-model="rowToEdit" @done="rowToEdit = null" />
     <b-modal v-model="showDeleteModal"
       size="small"
       hide-header
       ok-variant="danger"
       @ok="deleteRow"
     >Do you really want to delete this tune?</b-modal>
-    <b-modal v-model="showEditModal"
-      size="lg"
-      ok-title="Save"
-      @ok="saveRow"
-    >
-      <template v-if="rowToEdit">
-        <b-form-group
-          label="Title"
-          label-for="input-title"
-        >
-          <b-form-input id="input-title" v-model="rowToEdit.title" :state="rowToEdit.title.length > 0" trim></b-form-input>
-        </b-form-group>
-        <b-form-group
-          label="Shout"
-          label-for="input-message"
-        >
-          <b-form-input id="input-message" v-model="rowToEdit.message" trim></b-form-input>
-        </b-form-group>
-      </template>
-    </b-modal>
   </div>
 </template>
 
 <script>
 import Item from './library/LibraryItem';
-import RemoveTune from '@/mixins/removeTune';
-import EditTune from '@/mixins/editTune';
+import RemoveTuneMix from '@/mixins/removeTune';
+import EditTuneMix from '@/mixins/editTune';
+import ShareTune from './library/ShareTune';
+import EditTune from './library/EditTune';
 import { mapState, mapGetters, mapMutations } from 'vuex';
 export default {
   name: "Library",
   components: {
     Item,
+    ShareTune,
+    EditTune,
   },
-  mixins: [ EditTune, RemoveTune],
+  mixins: [ EditTuneMix, RemoveTuneMix],
   data() {
     return  {
+      rowToShare: null,
       rowToEdit: null,
       rowToDelete: null,
       currentTunesListener: null,
@@ -85,26 +73,16 @@ export default {
     handlePlayTune(tune) {
       this.playTune(tune)
     },
-    handleEditRow(tune) {
-      this.rowToEdit = Object.assign({}, tune)
+    handleShareRow(row) {
+      this.rowToShare = row
     },
-    handleDeleteRow(tune) {
-      this.rowToDelete = tune
+    handleEditRow(row) {
+      this.rowToEdit = Object.assign({}, row)
     },
-    saveRow() {
-      this.editTune(this.currentPlaylist.id, this.rowToEdit)
-      .then(() => {
-        this.$bvToast.toast('"' + this.rowToEdit.title + '" has been edited', {
-          title: 'Done',
-          variant: 'success',
-          solid: true,
-          appendToast: true,
-        })
-        this.rowToEdit = null
-      })
+    handleDeleteRow(row) {
+      this.rowToDelete = row
     },
     deleteRow() {
-      console.log('delete', this.rowToDelete)
       if (!this.rowToDelete) { return }
       this.removeTune( this.currentPlaylist.id, this.rowToDelete)
         .then(() => {

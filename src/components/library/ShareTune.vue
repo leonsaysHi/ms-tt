@@ -48,7 +48,7 @@ export default {
       _.forEach(this.shareToPlaylists, this.shareTune)
       this.isWorking = false
       this.shareToPlaylists = null
-      this.$emit('input', null)
+      this.$emit('done')
     },
     async shareTune(playlistId) {
       const

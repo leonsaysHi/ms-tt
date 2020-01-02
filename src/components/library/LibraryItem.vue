@@ -21,23 +21,18 @@
         <template v-slot:button-content>
           <dots-vertical-icon />
         </template>
-        <b-dropdown-item :disabled="otherPlaylists.length === 0" @click="tuneToShare = item">Send to playlist...</b-dropdown-item>
+        <b-dropdown-item :disabled="otherPlaylists.length === 0" @click="$emit('share')">Send to playlist...</b-dropdown-item>
         <b-dropdown-item :disabled="!isOwner" @click="$emit('edit')">Edit</b-dropdown-item>
         <b-dropdown-item :disabled="!isOwner" @click="$emit('delete')"><span :class="{'text-danger': isOwner}">Delete</span></b-dropdown-item>
       </b-dropdown>
     </div>
-    <ShareTune v-model="tuneToShare" @input="tuneToShare = null" />
   </li>
 </template>
 
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
-import ShareTune from './ShareTune';
 export default {
   name: "LibraryItem",
-  components: {
-    ShareTune,
-  },
   props: ['item'],
   data() {
     return  {
