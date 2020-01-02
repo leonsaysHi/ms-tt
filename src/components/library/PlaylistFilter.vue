@@ -45,6 +45,7 @@ export default {
   computed: {
     ...mapState("Library", {
       queueIsWorking: 'isWorking',
+      storeFilter: 'filter',
     }),
     ...mapGetters("Library", {
       isFiltered: 'isFiltered',
@@ -62,7 +63,7 @@ export default {
       resetFilter: 'resetFilter',
     }),
     handleShow() {
-
+      this.values = { ...this.storeFilter }
     },
     handleHide() {
 

@@ -42,6 +42,7 @@ import Repeat from 'vue-material-design-icons/Repeat.vue';
 import RepeatOff from 'vue-material-design-icons/RepeatOff.vue';
 import RepeatOnce from 'vue-material-design-icons/RepeatOnce.vue';
 import Share from 'vue-material-design-icons/Share.vue';
+import Shuffle from 'vue-material-design-icons/Shuffle.vue';
 import SkipNext from 'vue-material-design-icons/SkipNext.vue';
 import Stop from 'vue-material-design-icons/Stop.vue';
 
@@ -59,6 +60,7 @@ Vue.component('repeat-icon', Repeat);
 Vue.component('repeat-off-icon', RepeatOff);
 Vue.component('repeat-once-icon', RepeatOnce);
 Vue.component('share-icon', Share);
+Vue.component('shuffle-icon', Shuffle);
 Vue.component('skip-next-icon', SkipNext);
 Vue.component('stop-icon', Stop);
 

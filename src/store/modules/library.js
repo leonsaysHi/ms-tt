@@ -1,6 +1,7 @@
 const defaultFilter = () => ({
   player: null,
-  upvote: false,
+  upvoted: false,
+  upvotedByMe: false,
 })
 
 export default {
@@ -9,6 +10,7 @@ export default {
   state: {
     isWorking: true,
     rows: [],
+    shuffle: [],
     repeatAll: false,
     repeatOne: false,
     filter: defaultFilter(),
@@ -17,6 +19,7 @@ export default {
     reset(state) {
       state.isWorking = false
       state.rows = []
+      state.shuffle = null
     },
     toggleRepeat(state) {
       if (state.repeatAll) {
@@ -32,11 +35,15 @@ export default {
         state.repeatOne = false
       }
     },
+    toggleShuffle(state) {
+      state.shuffle = _.isArray(state.shuffle) ? null : _.shuffle(state.rows.map( (r, idx) => idx))
+    },
     gettingRows(state) {
       state.isWorking = true
     },
     setRows(state, list) {
       state.rows = list
+      state.shuffle = null
       state.isWorking = false
     },
     rowErrored(state, video_id) {
@@ -68,15 +75,22 @@ export default {
   },
   getters: {
     queue(state, getters, rootState, rootGetters) {
-      console.log(rootGetters)
       const uid = rootGetters['User/uid']
-      let filtered = state.rows
-        .filter(r => (!state.filter.player || r.uid === state.filter.player) )
-        .filter(r => (
-          (!state.filter.upvoted && !state.filter.upvotedByMe)
-          || ( state.filter.upvoted && r.votes && r.votes.length > 0 )
-          || ( state.filter.upvotedByMe && r.votes && r.votes.includes(uid) )
-        ))
+      const order = state.shuffle || state.rows.map( (r, idx) => idx)
+      const filtered = order.reduce( (acc, curr) => {
+        const r = state.rows[curr]
+        // apply filters
+        if (state.filter.player && r.uid !== state.filter.player) return acc
+        const
+          isUpvoted = (r.votes && r.votes.length > 0),
+          isUpvotedByMe = isUpvoted && r.votes.includes(uid)
+        if (
+          ((state.filter.upvoted || state.filter.upvotedByMe) && !isUpvoted)
+          || (state.filter.upvotedByMe && !isUpvotedByMe)
+        ) return acc
+        acc.push(r)
+        return acc
+      }, [])
       return filtered
     },
     isFiltered(state) {
@@ -85,6 +99,9 @@ export default {
         diff = diff || _.get(state.filter, key) !== value
       })
       return diff
+    },
+    isShuffled(state) {
+      return _.isArray(state.shuffle)
     },
     next(state, getters) {
       return (row) => {
