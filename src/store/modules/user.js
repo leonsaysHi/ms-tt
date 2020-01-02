@@ -3,16 +3,16 @@ export default {
   namespaced: true,
   strict: process.env.NODE_ENV !== 'production',
   state: {
-    user: { uid: null, displayName: 'Guest' }
+    user: { uid: null, isFullyLoaded: false }
   },
   mutations: {
     setUser (state, payload) {
-      if (_.get(payload, 'uid')) {
-        const { uid, email, displayName } = payload
-        state.user = { uid, email, displayName }
+      if (_.get(payload, 'uid')) { // from auth
+        const { uid, email } = payload
+        state.user = { ...state.user, uid, email }
       }
-      else {
-        state.user = { ...state.user, ...payload }
+      else { // from database
+        state.user = { ...state.user, ...payload, isFullyLoaded: true }
       }
     },
     deleteUser (state) {

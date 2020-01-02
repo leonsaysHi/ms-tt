@@ -2,7 +2,7 @@
   <b-modal
     v-model="showModal"
     hide-footer
-    title="Choose a username:"
+    title="Please choose your username:"
   >
     <b-form-group
       label="Username"
@@ -39,7 +39,7 @@ export default {
       isLogged: 'isLogged',
     }),
     showModal() {
-      return this.isLogged && !this.user.displayName
+      return this.isLogged && this.user.isFullyLoaded && !this.user.displayName
     }
   },
   methods: {

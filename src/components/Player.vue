@@ -1,7 +1,6 @@
 <template>
   <div class="pl-lg-3 pb-3 pb-lg-0">
     <Controls />
-    <UsernamePrompt />
     <NowPlaying />
     <div class="player" :key="playerReloaded">
       <youtube
@@ -18,13 +17,11 @@
 <script>
 import Controls from "./Controls";
 import NowPlaying from "./NowPlaying";
-import UsernamePrompt from '../components/UsernamePrompt.vue';
 import { mapState, mapGetters, mapMutations } from 'vuex';
 export default {
   components: {
     Controls,
     NowPlaying,
-    UsernamePrompt,
   },
   data() {
     return {
