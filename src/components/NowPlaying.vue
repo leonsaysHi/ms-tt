@@ -3,18 +3,19 @@
     <div v-if="currentTune" class="border-top my-1 pt-2">
       <div>
         <div class="text-muted"><small>Now playing:</small></div>
-        <div class="d-flex align-items-start">
-          <div class="title">
-            <strong>{{ currentTune.title }} </strong>
-            <br><span>{{ owner.displayName }}</span> <small class="text-secondary">{{ currentTune.date | moment("from") }}</small>
+        <div class="">
+          <div class="title d-flex align-items-end">
+            <div><strong>{{ currentTune.title }} </strong></div>
+            <div class="ml-auto" v-if="isUser">
+              <b-link v-if="!voteIsWorking" @click="toggleVote" :class="{ 'text-muted': !hasOwnerUpvoted, 'text-danger': hasOwnerUpvoted }">
+                <heart-icon v-if="hasOwnerUpvoted" />
+                <heart-outline-icon v-else />
+              </b-link>
+              <b-spinner v-else small variant="muted"></b-spinner>
+            </div>
           </div>
-          <div class="ml-auto" v-if="isUser">
-            <b-link v-if="!voteIsWorking" @click="toggleVote" :class="{ 'text-muted': !hasOwnerUpvoted, 'text-danger': hasOwnerUpvoted }">
-              <heart-icon v-if="hasOwnerUpvoted" />
-              <heart-outline-icon v-else />
-            </b-link>
-            <b-spinner v-else small variant="muted"></b-spinner>
-          </div>
+          <div v-if="currentTune.message" class="border rounded bg-light my-1 p-1">{{ currentTune.message }}</div>
+          <div><span>by {{ owner.displayName }}</span> <small class="text-secondary">{{ currentTune.date | moment("from") }}</small></div>
         </div>
       </div>
     </div>

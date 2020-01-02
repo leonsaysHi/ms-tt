@@ -3,8 +3,9 @@
     <b-button class="d-none d-lg-block align-self-center ml-2" @click="$emit('play')" :disabled="isCurrent || isError" :variant="isCurrent ? 'light' : 'primary'">
       <play-icon />
     </b-button>
-    <div class="title p-2" @click="$emit('play')">
+    <div class="title flex-grow-1 p-2" @click="$emit('play')">
       <strong :class="{'text-muted': item.isWorking, 'text-danger': item.isError}">{{ item.title }} </strong>
+      <div v-if="item.message" class="border rounded bg-light my-1 p-1">{{ item.message }}</div>
       <div class="d-flex align-items-baseline">
         <small>Added by <strong><display-name :uid="item.uid" /></strong></small>
         <small class="mx-2 text-secondary">{{ item.date | moment("from") }}</small>

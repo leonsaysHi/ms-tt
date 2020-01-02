@@ -29,6 +29,12 @@
         >
           <b-form-input id="input-title" v-model="rowToEdit.title" :state="rowToEdit.title.length > 0" trim></b-form-input>
         </b-form-group>
+        <b-form-group
+          label="Shout"
+          label-for="input-message"
+        >
+          <b-form-input id="input-message" v-model="rowToEdit.message" trim></b-form-input>
+        </b-form-group>
       </template>
     </b-modal>
   </div>
