@@ -16,7 +16,7 @@
       <b-navbar-nav class="ml-auto">
         <b-nav-item-dropdown right text="User">
           <b-dropdown-item :to="{name:'profile'}">Profile</b-dropdown-item>
-          <b-dropdown-item @click="handleLogout">Sign Out</b-dropdown-item>
+          <b-dropdown-item @click="logout">Logout</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-collapse>
@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapMutations } from 'vuex';
+import { mapState, mapGetters, mapActions } from 'vuex';
 export default {
   data() {
     return {}
@@ -43,17 +43,14 @@ export default {
     },
   },
   methods: {
-    ...mapMutations("User", {
-      deleteUser: 'deleteUser',
+    ...mapActions("User", {
+      logout: 'signOutAction',
     }),
     selectPlaylist(id) {
-      this.$router.push({ name:'playlist', params: { id }})
+      this.$router.push(
+        { name:'playlist', params: { id }},
+      )
     },
-    handleLogout() {
-      window.firebase.auth().signOut().then(() => {
-        this.deleteUser()
-      })
-    }
   },
 };
 </script>

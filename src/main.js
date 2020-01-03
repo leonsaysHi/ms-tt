@@ -71,16 +71,11 @@ Vue.component('display-name', require('./components/DisplayName.vue').default)
 Vue.directive('time', require('./directives/formatTime.js').default);
 
 let app = '';
-window.firebase.auth().onAuthStateChanged((user) => {
-  if (!app) {
-    /* eslint-disable no-new */
-    app = new Vue({
-      router,
-      store,
-      render: h => h(App)
-    }).$mount('#app');
-  }
-  else if (!user){
-    router.replace('login')
-  }
-});
+if (!app) {
+  /* eslint-disable no-new */
+  app = new Vue({
+    router,
+    store,
+    render: h => h(App)
+  }).$mount('#app');
+}

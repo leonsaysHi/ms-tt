@@ -3,7 +3,7 @@
     <h2 class="mb-0">{{ currentPlaylist.title }}</h2>
     <div class="d-flex align-items-start">
       <PlaylistUsers class="ml-2" />
-      <AddVideo class="ml-2" />
+      <AddVideo v-if="isLogged" class="ml-2" />
     </div>
   </div>
 </template>
@@ -21,6 +21,9 @@ export default {
   created() {
   },
   computed: {
+    ...mapGetters("User", {
+      isLogged: 'isLogged',
+    }),
     ...mapGetters("Playlists", {
       currentPlaylist: 'currentPlaylist',
     }),

@@ -59,10 +59,18 @@ const router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
-  const currentUser = firebase.auth().currentUser;
-  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-  if (requiresAuth && !currentUser) next({ name: 'login' });
-  else next();
-});
+  const currentUser = firebase.auth().currentUser
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
+  if (requiresAuth && !currentUser) {
+    next({ name: 'login' })
+  }
+  else if (!requiresAuth && to.name !== 'playlist' && currentUser) {
+    next({ name: 'home' })
+  }
+  else {
+    next()
+  }
+})
+router.onError( err => console.log('Router error:', err))
 
 export default router;
