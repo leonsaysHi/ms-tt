@@ -151,7 +151,7 @@ export default {
       this.addTune( this.currentPlaylist.id, tune)
         .then(() => {
           this.$bvToast.toast('"' + tune.title + '" saved to playlist.', {
-            title: 'Shared',
+            title: 'Added',
             variant: 'success',
             solid: true,
             appendToast: true,

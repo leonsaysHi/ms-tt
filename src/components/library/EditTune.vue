@@ -51,7 +51,7 @@ export default {
       this.editTune(this.currentPlaylist.id, this.value)
       .then(() => {
         this.$bvToast.toast('"' + this.value.title + '" has been edited', {
-          title: 'Done',
+          title: 'Edited',
           variant: 'success',
           solid: true,
           appendToast: true,

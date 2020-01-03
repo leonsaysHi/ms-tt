@@ -8,6 +8,9 @@ export default {
       return new Promise((res, rej) => {
           docRef.get().then((doc) => {
           if (doc.exists) {
+            _.forOwn(tune, function(value, key) {
+              if(!value) delete tune[key]
+            })
             docRef.set(tune)
             res(tune)
           } else {

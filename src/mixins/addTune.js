@@ -16,6 +16,9 @@ export default {
             })
             rej(doc)
           } else {
+            _.forOwn(tune, function(value, key) {
+              if(!value) delete tune[key]
+            })
             docRef.set(tune)
             res(tune)
           }
