@@ -6,7 +6,7 @@
         <div class="">
           <div class="title d-flex align-items-end">
             <div><strong>{{ currentTune.title }} </strong></div>
-            <div class="ml-auto" v-if="isUser">
+            <div class="ml-auto" v-if="isLogged">
               <b-link v-if="!voteIsWorking" @click="toggleVote" :class="{ 'text-muted': !hasOwnerUpvoted, 'text-danger': hasOwnerUpvoted }">
                 <heart-icon v-if="hasOwnerUpvoted" />
                 <heart-outline-icon v-else />
@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import VoteTune from '@/mixins/voteTune';
 export default {
   mixins: [VoteTune],
@@ -33,6 +33,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters("User", {
+      isLogged: 'isLogged',
+    }),
     ...mapState("User", {
       user: 'user',
     }),
@@ -49,7 +52,7 @@ export default {
       return this.user && this.user.uid ? true : false
     },
     isOwner() {
-      return this.currentTune.uid === this.user.uid
+      return this.isLogged ? this.currentTune.uid === this.user.uid : false
     },
     hasOwnerUpvoted() {
       return this.currentTune.votes && this.currentTune.votes.includes(this.user.uid)

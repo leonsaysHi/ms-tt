@@ -31,7 +31,6 @@ export default {
   data() {
     return {
       isWorking: true,
-
       currentPlaylistsListener: null,
       currentUserListener: null,
     }
@@ -39,7 +38,7 @@ export default {
   created() {
     firebase.auth().onAuthStateChanged(async (user) => {
       if (user) {
-        await this.setUser({ email: user.email, uid: user.uid })
+        this.setUser({ email: user.email, uid: user.uid })
         const
           updatePlaylistsStore = this.setPlaylists,
           updateUserStore = this.setUser
@@ -48,19 +47,25 @@ export default {
             const playlists = []
             querySnapshot.forEach(function(doc) {
               playlists.push({ id: doc.id, ...doc.data()})
-            });
+            })
             updatePlaylistsStore(playlists)
-          });
+          })
         this.currentUserListener = window.db.collection("users").doc(this.userId)
           .onSnapshot(function(doc) {
             updateUserStore({ ...doc.data() });
           })
-        this.$router.push({ name:'home' })
+        if (this.$router.name !== "home" && this.$router.name !== "playlist") {
+          this.$router.push({ name:'home' })
+        }
       }
       else {
         if (this.currentPlaylistsListener) {
           this.$data['currentPlaylistsListener']()
           this.$data['currentUserListener']()
+        }
+        this.deleteUser()
+        if (_.get(this.$route, 'meta.requiresAuth')) {
+          this.$router.replace({ name:'login' })
         }
       }
     })
@@ -80,6 +85,7 @@ export default {
   methods: {
     ...mapMutations("User", {
       setUser: 'setUser',
+      deleteUser: 'deleteUser',
     }),
     ...mapMutations("Playlists", {
       setPlaylists: 'setPlaylists',

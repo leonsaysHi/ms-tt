@@ -19,7 +19,7 @@
         <b-form-checkbox v-model="values.upvoted" button :button-variant="values.upvoted ? 'primary' : 'light'">
           <heart-icon /><br>by all
         </b-form-checkbox>
-        <b-form-checkbox v-model="values.upvotedByMe" button :button-variant="values.upvotedByMe ? 'primary' : 'light'" class="ml-1">
+        <b-form-checkbox v-if="isLogged" v-model="values.upvotedByMe" button :button-variant="values.upvotedByMe ? 'primary' : 'light'" class="ml-1">
           <heart-icon /><br>by me
         </b-form-checkbox>
       </b-form-group>
@@ -43,6 +43,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters("User", {
+      isLogged: 'isLogged',
+    }),
     ...mapState("Library", {
       queueIsWorking: 'isWorking',
       storeFilter: 'filter',

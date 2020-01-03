@@ -7,7 +7,7 @@
       ok-only
     >
       <b-list-group>
-        <b-list-group-item v-for="item in players" :key="item.uid" :variant="item.uid === user.uid ? 'warning' : ''">
+        <b-list-group-item v-for="item in players" :key="item.uid" :variant="isLogged && item.uid === user.uid ? 'warning' : ''">
           <div class="d-flex align-items-start">
             <display-name :uid="item.uid" />
             <div class="ml-auto">
@@ -33,6 +33,9 @@ export default {
   computed: {
     ...mapState("User", {
       user: 'user',
+    }),
+    ...mapGetters("User", {
+      isLogged: 'isLogged',
     }),
     ...mapGetters("Playlists", {
       currentPlaylist: 'currentPlaylist',
