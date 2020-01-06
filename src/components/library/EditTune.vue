@@ -15,8 +15,13 @@
       <b-form-group
         label="Shout"
         label-for="input-message"
+        :description="messageDescription"
       >
-        <b-form-input id="input-message" v-model="value.message" trim></b-form-input>
+        <b-form-input
+          id="input-message"
+          v-model="value.message"
+          @keyup="handleLimitMessage"
+          trim></b-form-input>
       </b-form-group>
     </template>
   </b-modal>
@@ -31,6 +36,7 @@ export default {
   data() {
     return  {
       isWorking: false,
+      maxMessageLength: 50,
     }
   },
   computed: {
@@ -44,8 +50,14 @@ export default {
       get: function() { return this.value ? true : false },
       set: function() { }
     },
+    messageDescription() {
+      return (_.isString(this.value.message) ? this.value.message.length : 0) + '/' + this.maxMessageLength
+    }
   },
   methods: {
+    handleLimitMessage() {
+      this.value.message = _.isString(this.value.message) ? this.value.message.substring(0, this.maxMessageLength) : ''
+    },
     handleEdit() {
       this.isWorking = true
       this.editTune(this.currentPlaylist.id, this.value)
