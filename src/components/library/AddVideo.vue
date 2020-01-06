@@ -16,45 +16,48 @@
           id="input-add"
           v-model="urlInput"
           :state="state"
-          :disabled="!player"
+          :disabled="!playerReady"
           placeholder="Youtube video's URL"
           trim
         ></b-form-input>
       </b-form-group>
       <div class="d-lg-flex align-items-start details">
-        <b-spinner  small variant="primary" v-if="videoId && !hasVideoDatas"></b-spinner>
-        <div class="player mr-2 mb-3 border-right bg-dark" :class="{'align-self-stretch': hasVideoDatas}">
+        <div class="player mr-2 mb-3 border-right bg-dark">
           <div>
             <youtube
               ref="youtube"
               :player-vars="playerVars"
+              @ready="playerReady = true"
             />
           </div>
         </div>
-        <div v-if="hasVideoDatas" class="ml-lg-2 flex-grow-1">
-          <b-form-group
-            label="Title"
-            label-for="input-title"
-          >
-            <b-form-input id="input-title" v-model="videoDatas.title" :disabled="videoAlreadyAdded || !hasVideoDatas" :state="videoDatas.title.length > 0" trim></b-form-input>
-          </b-form-group>
-          <b-form-group
-            label="Shout"
-            label-for="input-message"
-            :description="messageDescription"
-          >
-            <b-form-input
-            id="input-message"
-            v-model="form.values.message"
-            :disabled="videoAlreadyAdded || !hasVideoDatas"
-            @keyup="handleLimitMessage"
-            trim></b-form-input>
-          </b-form-group>
-          <div class="d-flex">
-            <b-button v-if="videoAlreadyAdded" :disabled="true">Already added by <display-name :uid="videoAlreadyAdded.uid" /></b-button>
-            <b-button v-else variant="primary" @click="add" class="ml-auto">Add</b-button>
+        <template v-if="videoId">
+          <b-spinner v-if="!hasVideoDatas" small variant="primary"></b-spinner>
+          <div v-else class="ml-lg-2 flex-grow-1">
+            <b-form-group
+              label="Title"
+              label-for="input-title"
+            >
+              <b-form-input id="input-title" v-model="videoDatas.title" :disabled="videoAlreadyAdded || !hasVideoDatas" :state="videoDatas.title.length > 0" trim></b-form-input>
+            </b-form-group>
+            <b-form-group
+              label="Shout"
+              label-for="input-message"
+              :description="messageDescription"
+            >
+              <b-form-input
+              id="input-message"
+              v-model="form.values.message"
+              :disabled="videoAlreadyAdded || !hasVideoDatas"
+              @keyup="handleLimitMessage"
+              trim></b-form-input>
+            </b-form-group>
+            <div class="d-flex">
+              <b-button v-if="videoAlreadyAdded" :disabled="true">Already added by <display-name :uid="videoAlreadyAdded.uid" /></b-button>
+              <b-button v-else variant="primary" @click="add" class="ml-auto">Add</b-button>
+            </div>
           </div>
-        </div>
+        </template>
       </div>
     </b-modal>
     <slot v-bind:toggle="toggle"><b-button variant="primary" @click="toggle"><plus-thick-icon /></b-button></slot>
@@ -69,6 +72,7 @@ export default {
   data() {
     return  {
       modalShow: false,
+      playerReady: false,
       form: {
         maxMessageLength: 50,
         values: {
@@ -121,6 +125,8 @@ export default {
       }
       else {
         this.videoDatas = null
+        this.player.stopVideo()
+        this.player.clearVideo()
       }
     }
   },
@@ -136,6 +142,7 @@ export default {
     onHide() {
       this.player.removeEventListener('onStateChange')
       this.player.removeEventListener('onError')
+      this.playerReady = false
       this.player = null
       this.urlInput = ''
       this.form.values.message = null
@@ -151,8 +158,12 @@ export default {
       this.state = false
     },
     playerChange (state) {
-      if (!this.state || this.videoAlreadyAdded) { return }
-      this.videoDatas = state.target.getVideoData()
+      if (state.target) {
+        const vd = state.target.getVideoData()
+        if (!_.get(this.videoDatas, 'video_id') && _.get(vd, 'title')) {
+          this.videoDatas = vd
+        }
+      }
     },
     handleLimitMessage() {
       this.form.values.message = _.isString(this.form.values.message) ? this.form.values.message.substring(0, this.form.maxMessageLength) : ''
