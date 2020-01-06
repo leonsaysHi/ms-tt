@@ -41,8 +41,14 @@
           <b-form-group
             label="Shout"
             label-for="input-message"
+            :description="messageDescription"
           >
-            <b-form-input id="input-message" v-model="videoDatas.message" :disabled="videoAlreadyAdded || !hasVideoDatas" trim></b-form-input>
+            <b-form-input
+            id="input-message"
+            v-model="form.values.message"
+            :disabled="videoAlreadyAdded || !hasVideoDatas"
+            @keyup="handleLimitMessage"
+            trim></b-form-input>
           </b-form-group>
           <div class="d-flex">
             <b-button v-if="videoAlreadyAdded" :disabled="true">Already added by <display-name :uid="videoAlreadyAdded.uid" /></b-button>
@@ -63,6 +69,12 @@ export default {
   data() {
     return  {
       modalShow: false,
+      form: {
+        maxMessageLength: 50,
+        values: {
+          message: null,
+        },
+      },
       urlInput: '',
       videoDatas: null,
       videoAlreadyAdded: null,
@@ -95,6 +107,9 @@ export default {
     hasVideoDatas() {
       return !!(this.videoDatas && _.get(this.videoDatas, 'title'))
     },
+    messageDescription() {
+      return (_.isString(this.form.values.message) ? this.form.values.message.length : 0) + '/' + this.form.maxMessageLength
+    }
   },
   watch: {
     videoId: function(value) {
@@ -123,6 +138,7 @@ export default {
       this.player.removeEventListener('onError')
       this.player = null
       this.urlInput = ''
+      this.form.values.message = null
       this.videoDatas = null
       this.videoAlreadyAdded = null
     },
@@ -138,13 +154,16 @@ export default {
       if (!this.state || this.videoAlreadyAdded) { return }
       this.videoDatas = state.target.getVideoData()
     },
+    handleLimitMessage() {
+      this.form.values.message = _.isString(this.form.values.message) ? this.form.values.message.substring(0, this.form.maxMessageLength) : ''
+    },
     add () {
       const
-        { video_id, title, message } = this.videoDatas,
+        { video_id, title } = this.videoDatas,
         tune = {
           video_id,
           title,
-          message,
+          message: this.message,
           uid: this.userId,
           date: new Date().getTime(),
         }
@@ -168,6 +187,7 @@ export default {
 <style lang="scss" scoped>
   .player {
     width: 200px;
+    height: 150px;
     position:relative;
     ::v-deep iframe {
       position: absolute;
