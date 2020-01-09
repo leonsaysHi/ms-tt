@@ -4,14 +4,14 @@
       <div>
         <div class="text-muted"><small>Now playing:</small></div>
         <div class="">
-          <div class="title d-flex align-items-end">
+          <div class="title d-flex align-items-start">
             <div><strong>{{ currentTune.title }} </strong></div>
-            <div class="ml-auto" v-if="isLogged">
-              <b-link v-if="!voteIsWorking" @click="toggleVote" :class="{ 'text-muted': !hasOwnerUpvoted, 'text-danger': hasOwnerUpvoted }">
+            <div class="ml-auto upvote" :class="{'-busy': voteIsWorking}" v-if="isLogged">
+              <b-link @click="toggleVote" :class="{ 'text-muted': !hasOwnerUpvoted, 'text-danger': hasOwnerUpvoted }">
                 <heart-icon v-if="hasOwnerUpvoted" />
                 <heart-outline-icon v-else />
               </b-link>
-              <b-spinner v-else small variant="muted"></b-spinner>
+              <div class="spinner" v-if="voteIsWorking"><b-spinner small variant="muted"></b-spinner></div>
             </div>
           </div>
           <div v-if="currentTune.message" class="border rounded bg-light my-1 p-1">{{ currentTune.message }}</div>
@@ -68,6 +68,7 @@ export default {
         .then(()=>{
           this.voteIsWorking = false
         })
+
     }
   }
 };
@@ -76,5 +77,15 @@ export default {
 <style lang="scss" scoped>
   .title {
     line-height: 1rem;
+  }
+  .upvote {
+    position: relative;
+    &.-busy a { opacity: .2 }
+    .spinner {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
   }
 </style>

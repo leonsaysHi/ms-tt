@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from 'vuex';
+import { mapGetters, mapMutations, mapActions } from 'vuex';
 import PlaylistHeader from '@/components/library/PlaylistHeader';
 import Library from "@/components/Library";
 export default {
@@ -47,20 +47,27 @@ export default {
       gettingLibraryRows: 'gettingRows',
       setLibraryRows: 'setRows',
     }),
+    ...mapActions("Player", {
+      updatePlayingTune: 'refreshCurrent',
+    }),
     connectToDb(id) {
       if (this.currentTunesListener) {
         this.currentTunesListener()
       }
-      const updateStoreRows = this.setLibraryRows
+      const
+        updateStoreRows = this.setLibraryRows,
+        updatePlayingTune = this.updatePlayingTune
       this.gettingLibraryRows()
       this.currentTunesListener = window.db.collection("playlists").doc(id).collection("tunes").orderBy("date")
         .onSnapshot(function(querySnapshot) {
           var tunes = [];
           querySnapshot.forEach(function(doc) {
-            tunes.push(doc.data())
+            const tune = doc.data()
+            tunes.push(tune)
           })
           tunes.reverse()
           updateStoreRows(tunes)
+          updatePlayingTune()
         })
     },
   },
