@@ -106,6 +106,7 @@ export default {
       const
         groups = this.urlInput.match(/^.*(youtu.be\/|v\/|e\/|u\/\w+\/|embed\/|v=)([^#&?]*).*/),
         video_id = (_.isArray(groups) && groups[2].length === 11) ? groups[2] : this.urlInput
+      console.log({ inputed: this.urlInput.trim(), video_id, groups })
       return (video_id.length == 11) ? video_id : null
     },
     hasVideoDatas() {
@@ -117,6 +118,7 @@ export default {
   },
   watch: {
     videoId: function(value) {
+      console.log('videoId', value)
       if (value) {
         this.videoAlreadyAdded = this.library.find(row => row.video_id === value) || null
         this.state = true

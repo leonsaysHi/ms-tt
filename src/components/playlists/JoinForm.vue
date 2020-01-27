@@ -10,7 +10,9 @@
 
 <script>
 import { mapState, mapGetters, mapMutations } from 'vuex';
+import JoinPlaylist from '@/mixins/joinPlaylist';
 export default {
+  mixins: [JoinPlaylist],
   data() {
     return {
       values: {
@@ -34,38 +36,26 @@ export default {
     ...mapMutations("Playlists", {
       pushToRows: 'pushToRows'
     }),
-    handleJoinPlaylist() {
-      this.isWorking = true
-      this.hasError = null
+    async handleJoinPlaylist() {
       if (this.playlistsList.find( g => g.id === this.values.id)) {
-        this.isWorking = false
         this.isError = { message: 'Already joined' }
         return
       }
-      var playlistRef = window.db.collection("playlists").doc(this.values.id)
-      playlistRef.get().then((doc) => {
-          if (doc.exists) {
-            const
-              payload = doc.data(),
-              uid = this.userId
-            payload.users.push(uid)
-            playlistRef.update(payload)
-              .then(() => {
-                this.values.id = ''
-                this.isWorking = false
-              })
-              .catch((error) => {
-                this.isError = { message: 'Error', error }
-                this.isWorking = false
-              });
-          } else {
-            this.isError = { message: 'Can not find playlist' }
-            this.isWorking = false
-          }
-      }).catch((error) => {
-        window.console.log("Error getting document:", error);
-        this.isWorking = false
-      })
+      this.isWorking = true
+      this.hasError = null
+      this.joinPlaylist(this.userId, this.values.id)
+        .then(() => {
+          this.resetValues()
+        })
+        .catch((error) => {
+          this.isError = { message: error.message, error }
+        })
+        .finally(() => {
+          this.isWorking = false
+        })
+    },
+    resetValues() {
+      this.values.id = ''
     },
   },
 };
