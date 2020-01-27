@@ -8,7 +8,7 @@
         <b-nav-item :to="{ name: 'signUp' }">Signup</b-nav-item>
       </b-navbar-nav>
     </b-navbar>
-    <div class="app-body flex-grow-1 p-3" :class="{'-hide-player': !currentPlaylist && !currentPlayerTune}">
+    <div class="app-body flex-grow-1 p-3" :class="{'-hide-player': !currentPlaylistId && !currentPlayerTune}">
       <div class="app-player"><Player /></div>
       <div class="app-main"><router-view :key="$route.fullPath"></router-view></div>
     </div>
@@ -75,8 +75,8 @@ export default {
       isLogged: 'isLogged',
       userId: 'uid',
     }),
-    ...mapGetters("Playlists", {
-      currentPlaylist: 'currentPlaylist',
+    ...mapState("Playlists", {
+      currentPlaylistId: 'currentId',
     }),
     ...mapState("Player", {
       currentPlayerTune: 'current',
